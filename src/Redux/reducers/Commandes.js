@@ -2,7 +2,8 @@ import {LOAD_COMMANDE,
         ADD_COMMANDE,
         ADD_ARTICLE_COMMANDE,
         ADD_BON_COMMANDE,
-        REMOVE_COMMANDE} from '../Constantes'
+        REMOVE_COMMANDE,
+        REMOVE_ALL_COMMANDE} from '../Constantes'
 
 
 
@@ -86,6 +87,11 @@ const reducerCommandes = (state=initialState.commandes, action) => {
 
         case REMOVE_COMMANDE:
             state = removeDataById(state, action.payload)
+            localStorage.setItem('Commandes', JSON.stringify(state))
+            return state
+
+        case REMOVE_ALL_COMMANDE:
+            state = []
             localStorage.setItem('Commandes', JSON.stringify(state))
             return state
             

@@ -39,18 +39,26 @@ const AddArticle = ({addArticleMembre}) => {
     const handleChange = event => {
         // recuperation de l'id pour savoir sur quel input on change l'etat
         // permet de cibler directement l'input en train de changer
-        if (event.target.type !== 'radio') {
-            setArticle({...article, [event.target.id]: event.target.value})
-        } else {
-            if (event.target.id === 'achat') {
-                setAchat(event.target.checked)
-                setDepot(!event.target.checked)
-                setArticle({...article, destination: true})
-            } else {
-                setAchat(!event.target.checked)
-                setDepot(event.target.checked)
-                setArticle({...article, destination: false})
-            }
+
+        switch (event.target.type) {
+            case 'radio':
+                if (event.target.id === 'achat') {
+                    setAchat(event.target.checked)
+                    setDepot(!event.target.checked)
+                    setArticle({...article, destination: true})
+                } else {
+                    setAchat(!event.target.checked)
+                    setDepot(event.target.checked)
+                    setArticle({...article, destination: false})
+                }
+                break; 
+
+            case 'number':
+                setArticle({...article, [event.target.id]: Number(event.target.value)})
+                break;
+            default:
+                setArticle({...article, [event.target.id]: event.target.value})
+                break;
         }
     }
     

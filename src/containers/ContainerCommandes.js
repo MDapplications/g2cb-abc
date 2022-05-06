@@ -15,7 +15,6 @@ const ContainerCommandes = () => {
     const navigate = useNavigate()
 
     //Selector (redux)
-    //const user = useSelector(state => state.user)
     const listCommandes = useSelector(state => state.commandes)
 
     //State
@@ -23,7 +22,7 @@ const ContainerCommandes = () => {
     
 
 
-
+    // afficher / Imprimer la commande
     const handleShow = commande => {
         const commandeId = commande.id
         if (commande.articles.length === 0) {
@@ -52,18 +51,19 @@ const ContainerCommandes = () => {
     }
 
 
+    const currencyLocalPrice = prix => {
+        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
+    }
 
 
-
-
-
+    //Afficher la liste des commandes
     const displayCommandes = listCommandes.length ? 
     listCommandes.map(commande => {
         return (
             <Accordion.Item eventKey={`${commande.id}`} key={commande.id}>
                 <Accordion.Header>
                     {commande.date} : Commande n° {commande.numCommande} - Total 
-                    : {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commande.montant)}
+                    : {currencyLocalPrice(commande.montant)}
                 </Accordion.Header>
                 <Accordion.Body style={{backgroundColor: '#f5f9fe'}}>
                     <Card.Body className='text-start'>
@@ -71,8 +71,7 @@ const ContainerCommandes = () => {
                         <Card.Subtitle className="text-muted">Créé : {commande.date + ' - ' + commande.user_name}</Card.Subtitle>
                         <Card.Text className='mt-3'>
                             <span>
-                                <strong>Montant :</strong>{' ' + 
-                                new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commande.montant)}
+                                <strong>Montant :</strong>{' ' + currencyLocalPrice(commande.montant)}
                             </span>
                             <span className='ms-4'>
                                 <strong>Nb d'Articles :</strong>{' ' + commande.nbArticles}

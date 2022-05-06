@@ -56,13 +56,13 @@ const Home = () => {
                         dispatch(addParams(params.data()))
                     })
                     .catch(err => {
-                        console.log(err)
+                        console.log('firebase.getParams',err)
                     })
 
                 }
             })
             .catch((error) => {
-                console.log(error);
+                console.log('firebase.getUser', error);
             })
         }
     
@@ -98,6 +98,8 @@ const Home = () => {
                     //-- statut --
                     standby: true,
                     forCommande: true,
+                    forFacture: false,
+                    forRetour: false,
                     commande: '',
                     facture: '',
                     depot: false,
@@ -110,7 +112,7 @@ const Home = () => {
                     dispatch(removeArticleMembre(uid))
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.log('firebase.addArticle',error)
                     //notification indiquant une erreur lors de l'envoie de la commande
                     toast.error("Echec lors de l'envoie de la commande !", {
                         position: "bottom-center",
@@ -154,7 +156,7 @@ const Home = () => {
                         dispatch(removeBonMembre(uid))
                     })
                     .catch((error) => {
-                        console.log(error)
+                        console.log('firebase.addBon', error)
                         //notification indiquant une erreur lors de l'envoie de la commande
                         toast.error("Echec lors de l'envoie de la commande !", {
                             position: "bottom-center",
@@ -176,6 +178,9 @@ const Home = () => {
         }
 
         if (finishArticleOK && finishBonOK) {
+            localStorage.removeItem('ArticlesStandby')
+            localStorage.removeItem('BonsStandby')
+
             //Envoie du mail seulment s'il y en a un de paramétré
             if (parametres.sendmail !== '') {
                 const templateParams = {sendmail: parametres.sendmail}
@@ -185,6 +190,9 @@ const Home = () => {
                     response => {console.log('MAIL SEND : SUCCESS!', response.status, response.text)}, 
                     err => {console.log('MAIL SEND : FAILED...', err)}
                 )
+                .catch(err => {
+                    console.log('emailjs.send', err);
+                })
             }
             
             //notification indiquant que la commande à bien était envoyé
@@ -210,6 +218,9 @@ const Home = () => {
                 progress: undefined,
             })
         }
+
+        //Fermeture du modal de double confirmation
+        hideModal()
        
     }
 
@@ -301,7 +312,7 @@ const Home = () => {
             </div>
         </div>
     </div>
-    :<p className='text-center mt-4'>Aucun Article pour le moment</p>
+    :<p className='text-center mt-4'>Aucun article pour le moment</p>
 
 
     //fermeture des modals

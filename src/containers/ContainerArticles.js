@@ -6,6 +6,7 @@ import { commandableArticleStandby, changeClubArticleStandby } from '../Redux/ac
 import { FirebaseContext } from '../components/Firebase'
 import { HiOutlineCheck } from 'react-icons/hi'
 import { commandableBonStandby } from '../Redux/actions/BonsStandby'
+import { removeAllPrepaFacture } from '../Redux/actions/PrepaFactures'
 
 
 
@@ -65,6 +66,7 @@ const ContainerArticles = ({showModal}) => {
                     //Retiré de la commande
                     firebase.disableForCommandeArticle(id)
                     .then(() => {
+                        dispatch(removeAllPrepaFacture())
                         dispatch(commandableArticleStandby(id, false))
                     })
                     .catch(err => {
@@ -74,6 +76,7 @@ const ContainerArticles = ({showModal}) => {
                     //Remettre dans la commande
                     firebase.enableForCommandeArticle(id)
                     .then(() => {
+                        dispatch(removeAllPrepaFacture())
                         dispatch(commandableArticleStandby(id, true))
                     })
                     .catch(err => {
@@ -86,6 +89,7 @@ const ContainerArticles = ({showModal}) => {
                     //Retiré de la commande
                     firebase.disableForCommandeBon(id)
                     .then(() => {
+                        dispatch(removeAllPrepaFacture())
                         dispatch(commandableBonStandby(id, false))
                     })
                     .catch(err => {
@@ -95,6 +99,7 @@ const ContainerArticles = ({showModal}) => {
                     //Remettre dans la commande
                     firebase.enableForCommandeBon(id)
                     .then(() => {
+                        dispatch(removeAllPrepaFacture())
                         dispatch(commandableBonStandby(id, true))
                     })
                     .catch(err => {
@@ -105,14 +110,25 @@ const ContainerArticles = ({showModal}) => {
             default:
                 break;
         }
-        
-        
     }
 
    
+    const currencyLocalPrice = prix => {
+        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
+    }
+
+
 
     //Désactivation du bouton
-    const displayBtnClub = (user_name) => ((user.prenom + ' ' + user.nom) !== user_name)
+    const displayBtnClub = (user_name) => {
+        if ((user.prenom + ' ' + user.nom) !== user_name) {
+            return {
+                display: 'none'
+            }
+        }
+        return {}
+    }
+    
 
     //Affiche les articles
     const displayArticles = articlesStandby.length ? 
@@ -125,7 +141,7 @@ const ContainerArticles = ({showModal}) => {
                         {displayForCommande(article.forCommande)}
                         <Badge bg="info" className='me-2'>Article</Badge>
                         {displayDestination(article.destination)}
-                        {`${article.date} - ${article.user_name} - [${article.reference}]: ${article.prix}€  (x${article.quantite})`}
+                        {`${article.date} - ${article.user_name} - [${article.reference}]: ${currencyLocalPrice(article.prix)} (x${article.quantite})`}
                     </Accordion.Header>
 
                     <Accordion.Body style={{backgroundColor: '#f5f9fe'}}>
@@ -138,7 +154,7 @@ const ContainerArticles = ({showModal}) => {
                             </Card.Text>
                             <Card.Text>
                                 <strong>Variante :</strong>{' ' + article.variante}<br/>
-                                <strong>Prix :</strong>{' ' + article.prix + ' €'}<br/>
+                                <strong>Prix :</strong>{' ' + currencyLocalPrice(article.prix)}<br/>
                                 <strong>Qté :</strong>{' ' + article.quantite}<br/>
                             </Card.Text>
                             <hr/>
@@ -153,7 +169,7 @@ const ContainerArticles = ({showModal}) => {
                                     <Button 
                                         variant="primary" 
                                         onClick={() => handleClubCommande(article.id)}
-                                        disabled={displayBtnClub(article.user_name)}>
+                                        style={displayBtnClub(article.user_name)}>
                                             Mettre au nom du club
                                     </Button>
                                 </div>
@@ -184,7 +200,7 @@ const ContainerArticles = ({showModal}) => {
                 <Accordion.Header>
                     {displayForCommande(bon.forCommande)}
                     <Badge bg="dark" className='me-2'>Bon</Badge>
-                    {`${bon.date} - ${bon.user_name} - [${bon.reference}]: ${bon.montant}€`}
+                    {`${bon.date} - ${bon.user_name} - [${bon.reference}]: ${currencyLocalPrice(bon.montant)}`}
                 </Accordion.Header>
 
                 <Accordion.Body style={{backgroundColor: '#f5f9fe'}}>
@@ -196,7 +212,7 @@ const ContainerArticles = ({showModal}) => {
                             <strong>Membre :</strong>{' ' + bon.user_name}
                         </Card.Text>
                         <Card.Text>
-                            <strong>Montant :</strong>{' ' + bon.montant + ' €'}
+                            <strong>Montant :</strong>{' ' + currencyLocalPrice(bon.montant)}
                         </Card.Text>
                         <hr/>
                         <div className='d-flex justify-content-between'>
@@ -224,7 +240,7 @@ const ContainerArticles = ({showModal}) => {
 
     //render
     return (
-        <Accordion className='mb-2'>
+        <Accordion className='mb-5'>
             {displayBons}
             {displayArticles}
         </Accordion>

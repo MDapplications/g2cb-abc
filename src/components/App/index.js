@@ -18,6 +18,7 @@ import Retours from '../Retours';
 import GestionUsers from '../GestionUsers';
 import StandbyArticle from '../StandbyArticle';
 import CommandePrint from '../CommandePrint';
+import FacturePrint from '../FacturePrint';
 import Parametres from '../Parametres';
 
 
@@ -45,7 +46,9 @@ function App() {
             <Route path='users' element={<GestionUsers/>}/>
             <Route path='parametres' element={<Parametres/>}/>
           </Route>
+          
           <Route path='/commandePrint/:commandeId' element={<CommandePrint/>}></Route>
+          <Route path='/facturePrint/:factureId' element={<FacturePrint/>}></Route>
 
           <Route path='/mentions' element={<Mentions/>}/>
           <Route path='/conditions' element={<Cgu/>}/>

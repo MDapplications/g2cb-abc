@@ -1,13 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {FirebaseContext} from '../Firebase'
 import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
+import { removeAllDepot } from '../../Redux/actions/Depot'
+import { removeAllCommande } from '../../Redux/actions/Commandes'
+import { removeAllFacture } from '../../Redux/actions/Factures'
 
 
 const Login = ({showModal}) => {
 
     const firebase = useContext(FirebaseContext)
     const navigate = useNavigate()
-
+    const dispatch = useDispatch()
+    const listFactures = useSelector(state => state.prepaFactures)
 
     // variable d'etat du formulaire
     const data = {
@@ -30,8 +36,24 @@ const Login = ({showModal}) => {
         } else if (btnLogin === true) {
             setBtnLogin(false)
         }
-    }, [btnLogin, loginData])
 
+        if (Object.keys(listFactures).length > 0) {
+            dispatch(removeAllPrepaFacture())
+        }
+        
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [btnLogin, listFactures, loginData])
+
+
+    //En chargant le composant
+    useEffect(() => {
+        dispatch(removeAllDepot())
+        dispatch(removeAllCommande())
+        dispatch(removeAllFacture())      
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+    
 
     //sur changement d'etat des input form
     const handleChange = event => {
@@ -46,10 +68,12 @@ const Login = ({showModal}) => {
         .then(user => {
             setLoginData({...data})
             setError('')            
-            //Supression de ArticlesStandby et BonsStandby à la connexion pour récupération des datas en cas de besoin.
+            //Supression de certaines données dans localStorage à la connexion pour récupération des datas fraiches depuis Firebase.
             localStorage.removeItem('ArticlesStandby')
             localStorage.removeItem('BonsStandby')
             localStorage.removeItem('Commandes')
+            localStorage.removeItem('Factures')
+            localStorage.removeItem('Depot')
             navigate('/')
         })
         .catch(error => {

@@ -2,7 +2,8 @@ import {LOAD_COMMANDE,
         ADD_COMMANDE,  
         ADD_ARTICLE_COMMANDE,
         ADD_BON_COMMANDE,
-        REMOVE_COMMANDE} from '../Constantes'
+        REMOVE_COMMANDE,
+        REMOVE_ALL_COMMANDE} from '../Constantes'
 
 
 //Action: Chargement des commandes
@@ -41,5 +42,12 @@ export const removeCommande = id => {
     return {
         type: REMOVE_COMMANDE,
         payload: id
+    }
+}
+
+//Action: Suppression d'une commande
+export const removeAllCommande = id => {
+    return {
+        type: REMOVE_ALL_COMMANDE
     }
 }

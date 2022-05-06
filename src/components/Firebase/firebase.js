@@ -5,7 +5,9 @@ import {
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     signOut, 
-    sendPasswordResetEmail } from 'firebase/auth'
+    sendPasswordResetEmail, 
+    setPersistence,
+    browserSessionPersistence} from 'firebase/auth'
 import { getFirestore, doc, setDoc, getDoc, where, getDocs, collection, query, updateDoc, deleteDoc } from "firebase/firestore"
 
 const {
@@ -40,13 +42,20 @@ class Firebase {
         this.analytics = getAnalytics(this.app)
         this.auth = getAuth()
         this.db = getFirestore(this.app)
+        //this.persistence = setPersistence(this.auth, browserSessionPersistence)
     }
+
+    
         
     //Inscription
     signupUser = (email, password) => createUserWithEmailAndPassword(this.auth, email, password)
     
     //Connexion
-    loginUser = (email, password) => signInWithEmailAndPassword(this.auth, email, password)
+    loginUser = (email, password) => {
+        return setPersistence(this.auth, browserSessionPersistence).then(() =>
+          signInWithEmailAndPassword(this.auth, email, password)
+        )
+    }
     
     //Deconnexion
     signoutUser = () => signOut(this.auth)
@@ -123,6 +132,9 @@ class Firebase {
     //récupération de la liste d'article en attentes
     getArticleStandby = () => getDocs(query(collection(this.db, "articles"), where("standby", "==", true)))
 
+    //récupération de la liste d'article en attentes
+    getArticleDepot = () => getDocs(query(collection(this.db, "articles"), where("depot", "==", true)))
+
     // L'article n'est plus en attente
     updateArticleStandby = (uid) => updateDoc(doc(this.db, "articles", uid), {standby: false})
 
@@ -131,11 +143,24 @@ class Firebase {
     //La commande ne sera pas mise dans une commande
     disableForCommandeArticle = (uid) => updateDoc(doc(this.db, "articles", uid), {forCommande: false})
 
+    //L'article sera mise dans une commande
+    enableForFactureArticle = (uid) => updateDoc(doc(this.db, "articles", uid), {forFacture: true})
+    //La commande ne sera pas mise dans une commande
+    disableForFactureArticle = (uid) => updateDoc(doc(this.db, "articles", uid), {forFacture: false})
+
+    //L'article sera mise dans une commande
+    enableForRetourArticle = (uid) => updateDoc(doc(this.db, "articles", uid), {forRetour: true})
+    //La commande ne sera pas mise dans une commande
+    disableForRetourArticle = (uid) => updateDoc(doc(this.db, "articles", uid), {forRetour: false})
+
     //L'article sera faite par le club
     changeClubArticle = (uid, value) => updateDoc(doc(this.db, "articles", uid), {user_name: value})
 
     //récupération de la liste d'article d'une commande
     getArticleCommande = (num_commande) => getDocs(query(collection(this.db, "articles"), where("commande", "==", num_commande)))
+
+    //récupération de la liste d'article d'une commande
+    getArticleFacture = (num_facture) => getDocs(query(collection(this.db, "articles"), where("facture", "==", num_facture)))
 
     //L'article est ajouté à une commande
     addArticleCommande = (uid, data) => updateDoc(doc(this.db, "articles", uid), {
@@ -143,6 +168,11 @@ class Firebase {
         forCommande: false,
         standby: false,
         depot: data.depot
+    })
+
+    //L'article est ajouté à une facture
+    addArticleFacture = (uid, numFacture) => updateDoc(doc(this.db, "articles", uid), {
+        facture: numFacture
     })
 
 
@@ -164,19 +194,30 @@ class Firebase {
     //récupération de la liste des bons en attentes
     getBonStandby = () => getDocs(query(collection(this.db, "bons"), where("standby", "==", true)))
 
+    //récupération de la liste de bon en dépot
+    getBonDepot = () => getDocs(query(collection(this.db, "bons"), where("facture", "==", ""), where("commande", "!=", "")))
+
     //Le bon sera mise dans une commande
     enableForCommandeBon = (uid) => updateDoc(doc(this.db, "bons", uid), {forCommande: true})
     //Le bon ne sera pas mise dans une commande
     disableForCommandeBon = (uid) => updateDoc(doc(this.db, "bons", uid), {forCommande: false})
 
-    //récupération de la liste d'article d'une commande
+    //récupération de la liste de bon d'une commande
     getBonCommande = (num_commande) => getDocs(query(collection(this.db, "bons"), where("commande", "==", num_commande)))
+
+    //récupération de la liste de bon d'une facture
+    getBonFacture = (num_facture) => getDocs(query(collection(this.db, "bons"), where("facture", "==", num_facture)))
     
     //L'article est ajouté à une commande
     addBonCommande = (uid, num_commande) => updateDoc(doc(this.db, "bons", uid), {
         commande: num_commande,
         forCommande: false,
         standby: false,
+    })
+
+    //L'article est ajouté à une facture
+    addBonFacture = (uid, numFacture) => updateDoc(doc(this.db, "bons", uid), {
+        facture: numFacture
     })
 
 
@@ -186,9 +227,31 @@ class Firebase {
     //enregistrer une commande dans firestore
     addCommande = (id, commande) => setDoc(doc(this.db, "commandes", id), commande)
 
-    //récupération de la liste des bons en attentes
+    //récupération d'un bon dans firestore
+    getCommande = (idCommande) => getDoc(doc(this.db, "commandes", idCommande))
+
+    //récupération de la liste des commandes de l'année en cours
     getCommandes = (year) => getDocs(query(collection(this.db, "commandes"), where("year", "==", year)))
+
+
+    //------------------------------------------------------------------------------------------
+    //-------------------------------        FACTURES        ----------------------------------
+    //------------------------------------------------------------------------------------------
+    //enregistrer une fature dans firestore
+    addFacture = (id, facture) => setDoc(doc(this.db, "factures", id), facture)
+
+    //récupération de la liste des factures de l'année en cours
+    getFactures = (year) => getDocs(query(collection(this.db, "factures"), where("year", "==", year)))
+
+
+    //Le bon sera mise dans une commande
+    enableReglerFacture = (uid) => updateDoc(doc(this.db, "factures", uid), {regler: true})
+    //Le bon ne sera pas mise dans une commande
+    disableReglerFacture = (uid) => updateDoc(doc(this.db, "factures", uid), {regler: false})
+
+
  
+
 }
 
 export default Firebase

@@ -28,9 +28,8 @@ const Commandes = () => {
                 })
             })
             .catch((error) => {
-                console.log(error);
+                console.log('firebase.getCommandes', error);
             })
-
         }
 
 

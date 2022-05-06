@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import ContainerArticles from '../../containers/ContainerArticles'
 import { deleteArticleStandby, loadArticleStandby, removeArticleStandby } from '../../Redux/actions/ArticlesStandby'
 import { deleteBonStandby, loadBonStandby, removeBonStandby } from '../../Redux/actions/BonsStandby'
-import { initCompteurs, addCompteurCommande } from '../../Redux/actions/Compteurs'
+import { initCompteurs, addCompteurCommande, addCompteurFacture } from '../../Redux/actions/Compteurs'
 import { FirebaseContext } from '../Firebase'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Modal2Confirmation from '../Modal2Confirmation'
+import { addArticlePrepaFacture, addBonPrepaFacture, addPrepaFacture, removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
 toast.configure()
 
 
@@ -23,9 +24,13 @@ const StandbyArticle = () => {
     const articlesStandby = useSelector(state => state.articlesStandby)
     const bonsStandby = useSelector(state => state.bonsStandby)
     const compteurs = useSelector(state => state.compteurs)
+    const listFactures = useSelector(state => state.prepaFactures)
+
+
 
     //State
     const [username, setUsername] = useState('')
+    const [numFacture, setNumFacture] = useState('')
     const [numCommande, setNumCommande] = useState('')
     const [nbElementCommande, setNbElementCommande] = useState(0)
     const [nbBonCommande, setNbBonCommande] = useState(0)
@@ -52,6 +57,17 @@ const StandbyArticle = () => {
     //Ajoute un 0 pour les nombre à 1 digit
     const doubleDibit = (num) => (num > 9 ? "" + num: "0" + num)
 
+    //Ajoute un 0 pour les nombre à 1 digit
+    const tripleDibit = (num) => {
+        if (num < 10) {
+            return "00" + num
+        } else if (num < 100) {
+            return "0" + num
+        } else {
+            return "" + num
+        }
+    }
+
 
     useEffect(() => {
         let listener = firebase.auth.onAuthStateChanged(user => {
@@ -63,14 +79,14 @@ const StandbyArticle = () => {
 
 
 
-    //Calcul du nombre de bon, d'article et d'element total dnas la commande
+    //Calcul du nombre de bon, d'article et d'element total dans la commande
     useEffect(() => {
         //Calcul des articles en commande
         const calculArticle = articlesStandby.reduce((prevValue, article) => {
             if (article.forCommande) {
                 return {
                     montant: prevValue.montant + (article.prix * article.quantite), 
-                    nb: prevValue.nb + 1
+                    nb: prevValue.nb + article.quantite
                 }
             }else{
                 return prevValue
@@ -99,7 +115,9 @@ const StandbyArticle = () => {
 
     //Initialisation du prochain numéro de commande
     useEffect(() => {
+        
         setUsername(user.prenom + ' ' + user.nom)
+
         setNumCommande(
             dateCurrent.getFullYear() 
             + doubleDibit(dateCurrent.getMonth() + 1)
@@ -108,7 +126,15 @@ const StandbyArticle = () => {
             + 'C'
         )
 
-    }, [compteurs.commande, dateCurrent, numCommande, user])
+        setNumFacture(
+            dateCurrent.getFullYear() 
+            + doubleDibit(dateCurrent.getMonth() + 1)
+            + doubleDibit(dateCurrent.getDate())
+            + tripleDibit(compteurs.facture)
+            + 'F'
+        )
+
+    }, [compteurs.commande, compteurs.facture, dateCurrent, numCommande, numFacture, user])
 
 
 
@@ -184,6 +210,47 @@ const StandbyArticle = () => {
     //Désactivation du bouton "Créer la commande"
     const disableBtnCommande = () => nbElementCommande > 21  
  
+
+
+    //Gestion de la preparation de facturation
+    useEffect(() => {
+        //On récupère les articles/bons et infos pour la facturation
+        articlesStandby.forEach(article => {
+            if(article.forCommande){
+                if (article.destination) {
+                    if (!(article.user_id in listFactures)) {
+                        dispatch(addPrepaFacture(article))        
+                    } else {
+                        if (!(listFactures[article.user_id]['articles'].includes(article.id))) {
+                            dispatch(addArticlePrepaFacture(article))
+                        }
+                    }
+                }
+            }
+        })
+        bonsStandby.forEach(bon => {
+            if(bon.forCommande){
+                if (bon.user_id in listFactures) {
+                    if (!(listFactures[bon.user_id]['bons'].includes(bon.id))) {
+                        dispatch(addBonPrepaFacture(bon))
+                    }
+                }
+            }
+        })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [articlesStandby, bonsStandby])
+  
+
+    //Function qui renvoie un numero de facture en fonction d'une valeur
+    const getNumFacture = value => {
+        return dateCurrent.getFullYear() 
+            + doubleDibit(dateCurrent.getMonth() + 1)
+            + doubleDibit(dateCurrent.getDate())
+            + tripleDibit(value)
+            + 'F'
+    }
+
     
     //Création de la commande (c'est parti, WOOOOOOOooooooooooo !!!)
     const handleClick = () => {
@@ -199,7 +266,53 @@ const StandbyArticle = () => {
             user_name: username,
             year: currentYear
         }
-        console.log(commande)
+
+        let nbFacture = compteurs.facture - 1
+
+        //Creation des factures
+        for (const idUser in listFactures) {
+            
+            nbFacture = nbFacture + 1
+            const idFacture = getNumFacture(nbFacture)
+            
+            const facture = {
+                id: idFacture,
+                date: dateString,
+                num_facture: idFacture,
+                nb_bon: listFactures[idUser].nbBons,
+                nb_articles: listFactures[idUser].nbArticles,
+                montant: listFactures[idUser].montant,
+                user_id: listFactures[idUser].user_id,
+                user_name: listFactures[idUser].user_name,
+                year: currentYear,
+                // statut 
+                regler: false
+            }
+            firebase.addFacture(idFacture, facture)
+            .then(() => {
+                listFactures[idUser].articles.forEach(idArticle => {
+                    firebase.addArticleFacture(idArticle, idFacture)
+                    .catch(err => {
+                        console.log('firebase.addArticleFacture', err)
+                    })
+                })
+                listFactures[idUser].bons.forEach(idBon => {
+                    firebase.addBonFacture(idBon, idFacture)
+                    .catch(err => {
+                        console.log('firebase.addBonFacture',err)
+                    })
+                })
+                //Incrementation du numero de facture
+                dispatch(addCompteurFacture())
+            })
+            .catch(err => {
+                console.log('firebase.addFacture', err)
+            })
+
+        }
+
+
+
         //Création de la commande dans firebase
         firebase.addCommande(id, commande)
         .then(() => {
@@ -217,6 +330,13 @@ const StandbyArticle = () => {
                     .then(() => {
                         dispatch(removeArticleStandby(uid))
                     })
+                    .catch(err => {
+                        console.log('firebase.addArticleCommande', err)
+                    })
+                    .finally(() => {
+                        //remise à zero de la preparation facturation
+                        dispatch(removeAllPrepaFacture())
+                    })
                 }
             })
             //Mise à jour des bons
@@ -228,17 +348,34 @@ const StandbyArticle = () => {
                     .then(() => {
                         dispatch(removeBonStandby(uid))
                     })
+                    .catch(err => {
+                        console.log('firebase.addBonCommande', err)
+                    })
+                    .finally(() => {
+                        //remise à zero de la preparation facturation
+                        dispatch(removeAllPrepaFacture())
+                    })
                 }
             })
         })
         .catch((error) => {
-            console.log(error)
+            console.log('firebase.addCommande', error)
         })
         .finally(() => {
+            
+            localStorage.removeItem('Commandes')
+            localStorage.removeItem('Factures')
+            localStorage.removeItem('Depot')
+
             dispatch(addCompteurCommande())
 
+            //remise à zero de la preparation facturation
+            dispatch(removeAllPrepaFacture())
+
+            setOpenModalCommande(false)
+            
             //notification indiquant que la commande à bien était envoyé
-            toast.success('Commande ' + id + 'créée avec succès !', {
+            toast.success('Commande ' + id + ' créée avec succès !', {
                 position: "bottom-center",
                 autoClose: 2500,
                 hideProgressBar: false,
@@ -248,7 +385,7 @@ const StandbyArticle = () => {
                 progress: undefined,
             })
         })
-        setOpenModalCommande(false)
+        
     }
 
     

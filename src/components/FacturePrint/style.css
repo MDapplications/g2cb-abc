@@ -32,14 +32,6 @@ code {
   float: right;
 }
 
-
-@page { 
-  size: auto;     /* auto is the initial value */ 
-  margin: 0mm;    /* this affects the margin in the printer settings */ 
-  /**size: portrait;  portrait **/
-  /**size: landscape;   paysage **/
-}
-
 .pdf-footer {
   position: absolute;
   bottom: 0.25in;
@@ -95,11 +87,15 @@ code {
   padding-top: 0.3in;
 }
 
-/* Dimensions other than px and em should be divided by 1.33 for the proper PDF output */
-
+/* Dimensions the proper PDF output */
 .size-a4-paysage {
   width: 1203px;
   height: 850px;
+}
+
+.size-a4-portrait {
+  width: 850px;
+  height: 1203px;
 }
 
 
@@ -109,8 +105,9 @@ code {
   border: 1px solid rgba(20, 53, 80, 0.05);
 }
 
-
-
-
-
-
+@page { 
+  size: auto;     /* auto is the initial value */ 
+  margin: 0mm;    /* this affects the margin in the printer settings */ 
+  /**size: portrait; /** portrait **/
+  /**size: landscape; /** paysage **/
+}

@@ -1,39 +1,124 @@
-import React from 'react'
-import { Accordion, Button, Card } from 'react-bootstrap'
+import React, { useContext, useState } from 'react'
+import { Accordion, Badge, Button, Card } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { FirebaseContext } from '../components/Firebase'
+import { addArticleFacture, addBonFacture, reglerFacture } from '../Redux/actions/Factures'
 
 const ContainerFactures = () => {
     
-    const listFactures = []
+
+    //Hooks
+    const firebase = useContext(FirebaseContext)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    //Selector (redux)
+    //const user = useSelector(state => state.user)
+    const listFactures = useSelector(state => state.factures)
+
+    //State
+    const [currentYear] = useState(new Date().getFullYear())
+
+
+    // afficher / Imprimer la commande
+    const handleShow = facture => {
+        const factureId = facture.id
+        if (facture.articles.length === 0) {
+            firebase.getArticleFacture(factureId)
+            .then((docs) => {
+                docs.forEach((doc) => {   
+                    dispatch(addArticleFacture(doc.data())) 
+                })
+                if (facture.bons.length === 0 && facture.nbBons > 0) {
+                    firebase.getBonFacture(factureId)
+                    .then((docs) => {
+                        docs.forEach((doc) => { 
+                            dispatch(addBonFacture(doc.data())) 
+                        })
+                        navigate('/facturePrint/' + factureId)
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            }) 
+        }
+        else {
+            navigate('/facturePrint/' + factureId)
+        }  
+    }
+
+
+    const handleToggleRegler = facture => {
+        if (facture.regler) {
+            //Retiré de la commande
+            firebase.disableReglerFacture(facture.id)
+            .then(() => {
+                dispatch(reglerFacture(facture.id, false))
+            })
+            .catch(err => {
+                console.log('firebase.disableReglerFacture', err);
+            })
+        } else {
+            //Remettre dans la commande
+            firebase.enableReglerFacture(facture.id)
+            .then(() => {
+                dispatch(reglerFacture(facture.id, true))
+            })
+            .catch(err => {
+                console.log('firebase.enableReglerFacture', err);
+            })
+        }
+    }
+
+
+    const displayStateArticle = value => {
+        if (value) {
+            return <Badge bg="info" className='me-2'>Réglée</Badge>
+        } else {
+            return <Badge bg="danger" className='me-2'>Non réglée</Badge>
+        }
+    }
+
+    const currencyLocalPrice = prix => {
+        return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
+    }
+
+
     
     const displayFactures = listFactures.length ? 
-    listFactures.map(commande => {
+    listFactures.map(facture => {
         return (
-            <Accordion.Item eventKey={`${commande.id}`} key={commande.id}>
+            <Accordion.Item eventKey={`${facture.id}`} key={facture.id}>
                 <Accordion.Header>
-                    {commande.date} : Commande n° {commande.numCommande} - Total 
-                    : {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commande.montant)}
+                    {displayStateArticle(facture.regler)}
+                    {facture.date} : Facture n° {facture.numFacture} - {facture.user_name} - Total 
+                    : {currencyLocalPrice(facture.montant)}
                 </Accordion.Header>
                 <Accordion.Body style={{backgroundColor: '#f5f9fe'}}>
                     <Card.Body className='text-start'>
-                        <Card.Title>Commande : {commande.numCommande}</Card.Title>
-                        <Card.Subtitle className="text-muted">Créé : {commande.date + ' - ' + commande.user_name}</Card.Subtitle>
+                        <Card.Title>Facture : {facture.numFacture}</Card.Title>
+                        <Card.Subtitle className="text-muted">Créé : {facture.date + ' - ' + facture.user_name}</Card.Subtitle>
                         <Card.Text className='mt-3'>
                             <span>
-                                <strong>Montant :</strong>{' ' + 
-                                new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(commande.montant)}
+                                <strong>Montant :</strong>{' ' + currencyLocalPrice(facture.montant)}
                             </span>
                             <span className='ms-4'>
-                                <strong>Nb d'Articles :</strong>{' ' + commande.nbArticles}
+                                <strong>Nb d'Articles :</strong>{' ' + facture.nbArticles}
                             </span>
                             <span className='ms-4'>
-                                <strong>Nb de bons :</strong>{' ' + commande.nbBons}
+                                <strong>Nb de bons :</strong>{' ' + facture.nbBons}
                             </span>
                         </Card.Text>
                         <hr/>
                         <div className='d-flex justify-content-between'>
                             <div className='d-flex justify-content-start'>
-                                <Button variant="success">
+                                <Button variant="success" className='me-4' onClick={() => handleShow(facture)}>
                                     Afficher / Imprimer
+                                </Button>
+                                <Button variant="primary" onClick={() => handleToggleRegler(facture)}>
+                                    {facture.regler ? 'Facture non réglée' : 'Facture réglée'}
                                 </Button>
                             </div>
                         </div>
