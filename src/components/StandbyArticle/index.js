@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import ContainerArticles from '../../containers/ContainerArticles'
+import ContainerArticles from '../../containers/ArticlesStandby'
 import { deleteArticleStandby, loadArticleStandby, removeArticleStandby } from '../../Redux/actions/ArticlesStandby'
 import { deleteBonStandby, loadBonStandby, removeBonStandby } from '../../Redux/actions/BonsStandby'
 import { initCompteurs, addCompteurCommande, addCompteurFacture } from '../../Redux/actions/Compteurs'

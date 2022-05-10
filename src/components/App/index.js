@@ -9,8 +9,6 @@ import Home from '../Home';
 import ForgetPassword from '../ForgetPassword';
 import Cgu from '../Cgu';
 import Dashboard from '../Dashboard';
-import AddArticle from '../../containers/AddArticle';
-import AddBon from '../../containers/AddBon';
 import Commandes from '../Commandes';
 import Factures from '../Factures';
 import Depots from '../Depots';
@@ -20,6 +18,8 @@ import StandbyArticle from '../StandbyArticle';
 import CommandePrint from '../CommandePrint';
 import FacturePrint from '../FacturePrint';
 import Parametres from '../Parametres';
+import FormBonMembre from '../FormBonMembre';
+import FormArticleMembre from '../FormArticleMembre';
 
 
 function App() {
@@ -32,9 +32,9 @@ function App() {
           <Route path='/forgetPassword' element={<ForgetPassword/>}/>
 
           <Route path="/" element={<Home/>}>
-            <Route index element={<AddArticle/>}/> 
-            <Route path="article" element={<AddArticle/>}/>
-            <Route path="bon" element={<AddBon/>}/>
+            <Route index element={<FormArticleMembre/>}/> 
+            <Route path="article" element={<FormArticleMembre/>}/>
+            <Route path="bon" element={<FormBonMembre/>}/>
           </Route>
 
           <Route path='/admin' element={<Dashboard/>}>

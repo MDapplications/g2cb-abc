@@ -202,6 +202,11 @@ class Firebase {
     //Le bon ne sera pas mise dans une commande
     disableForCommandeBon = (uid) => updateDoc(doc(this.db, "bons", uid), {forCommande: false})
 
+    //Le bon sera mise dans une commande
+    enableForFactureBon = (uid) => updateDoc(doc(this.db, "bons", uid), {forFacture: true})
+    //Le bon ne sera pas mise dans une commande
+    disableForFactureBon = (uid) => updateDoc(doc(this.db, "bons", uid), {forFacture: false})
+
     //récupération de la liste de bon d'une commande
     getBonCommande = (num_commande) => getDocs(query(collection(this.db, "bons"), where("commande", "==", num_commande)))
 

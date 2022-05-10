@@ -6,6 +6,7 @@ import { removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
 import { removeAllDepot } from '../../Redux/actions/Depot'
 import { removeAllCommande } from '../../Redux/actions/Commandes'
 import { removeAllFacture } from '../../Redux/actions/Factures'
+import { removeAllBonDepot } from '../../Redux/actions/BonsDepot'
 
 
 const Login = ({showModal}) => {
@@ -49,6 +50,7 @@ const Login = ({showModal}) => {
     //En chargant le composant
     useEffect(() => {
         dispatch(removeAllDepot())
+        dispatch(removeAllBonDepot())
         dispatch(removeAllCommande())
         dispatch(removeAllFacture())      
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,6 +76,7 @@ const Login = ({showModal}) => {
             localStorage.removeItem('Commandes')
             localStorage.removeItem('Factures')
             localStorage.removeItem('Depot')
+            localStorage.removeItem('BonsDepot')
             navigate('/')
         })
         .catch(error => {

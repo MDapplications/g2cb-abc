@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import ContainerFactures from '../../containers/ContainerFactures'
+import ContainerFactures from '../../containers/Factures'
 import { addFacture } from '../../Redux/actions/Factures'
 import { FirebaseContext } from '../Firebase'
 

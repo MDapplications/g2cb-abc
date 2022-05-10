@@ -4,16 +4,14 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { FirebaseContext } from '../Firebase'
 import { addUser } from '../../Redux/actions/Users'
 import { useDispatch, useSelector } from 'react-redux'
-import FlipMove from 'react-flip-move'
 import {removeArticleMembre} from '../../Redux/actions/ArticlesMembre'
 import { addParams } from '../../Redux/actions/Parametres'
 import {removeBonMembre} from '../../Redux/actions/BonsMembre'
-import ReactTooltip from 'react-tooltip'
 import emailjs from 'emailjs-com'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { Badge } from 'react-bootstrap'
 import Modal2Confirmation from '../Modal2Confirmation'
+import ArticlesMembre from '../../containers/ArticlesMembre'
 
 toast.configure()
 
@@ -225,96 +223,6 @@ const Home = () => {
     }
 
 
-
-
-    //renvoie le texte : "Achat" ou "Dépôt" selon la destination (true | false)
-    //format badge
-    const displayDestination = destination => {
-        if (destination) {
-            return <Badge bg='primary' className='me-2'>Achat</Badge>
-        } else {
-            return <Badge bg='secondary' className='me-2'>Dépôt</Badge>
-        }
-    }
-
-
-    //affiche la liste des articles
-    const displayArticleData = ArticlesMembreData.length > 0 ? 
-    <FlipMove>
-    {
-        ArticlesMembreData.map(data => {
-            return (
-                <li 
-                    key={data.id} 
-                    className='list-group-item list-group-item-primary d-flex'>
-                        <span 
-                            className='p-2 w-50 d-flex flex-fill align-items-center'
-                            data-for='tootltipReference' 
-                            data-tip={`Référence : ${data.reference}`}>
-                                {displayDestination(data.destination)}
-                                <strong>Article: </strong><span className='px-2'>{data.description}</span>
-                                <ReactTooltip id="tootltipReference" place="left" effect="solid"/>
-                        </span>
-                        <div className='p-2 d-flex'>
-                            <span className='p-2 flex-fill'></span>
-                            <span className='p-2 flex-fill'><strong>Variante: </strong>{data.variante}</span>
-                            <span className='p-2 flex-fill'><strong>Qté: </strong>{data.quantite}</span>
-                            <span className='p-2 flex-fill'><strong>Prix: </strong>{data.prix + ' €'}</span>
-                            <span 
-                                className='btn btn-danger mx-2'
-                                onClick={() => removeArticleMembre(data.id)}>
-                                x
-                            </span>
-                        </div>     
-
-                </li>
-            )
-        })
-    }
-    </FlipMove>
-    : <></>
-
-
-    //affiche la liste des des bons de réduction
-    const displayBonData = BonsMembreData.length > 0 ? 
-    <FlipMove>
-    {
-        BonsMembreData.map(data => {
-            return (
-                <li 
-                    key={data.id} 
-                    className='list-group-item list-group-item-primary d-flex justify-content-between'
-                    style={{backgroundColor: '#ddf2ff'}}>
-                        <span className='p-2 flex-fill'><strong>Bon:</strong><span className='px-1'>{data.reference}</span></span>
-                        <span className='p-2 flex-fill'><strong>Montant: </strong>{data.montant + ' €'}</span>
-                        <span 
-                            className='btn btn-danger mx-1'
-                            onClick={() => removeBonMembre(data.id)}>
-                            x
-                        </span>
-                </li>
-            )
-        })
-    }
-    </FlipMove>
-    : <></>
-
-    const displayData = ArticlesMembreData.length > 0 || BonsMembreData.length > 0 ? 
-    <div className='container mb-5' style={{minHeight: '200px'}}>
-        <div className='row mt-3'>
-            <div className='col-md-12'>
-                <ul className='list-group'>
-                    {displayBonData}<br/>
-                    {displayArticleData}
-                </ul>
-
-                
-            </div>
-        </div>
-    </div>
-    :<p className='text-center mt-4'>Aucun article pour le moment</p>
-
-
     //fermeture des modals
     const hideModal = () => setOpenModalCommande(false)
     //Ouverture du modal
@@ -356,13 +264,15 @@ const Home = () => {
                 </div>
                 <hr/>
                 <div className='d-flex justify-content-center'>
-                    
                     {btnCommandeFini}
                 </div>
             </div>
         </main>
 
-        {displayData}
+        <div className='text-center justify-content-center m-4'>
+            <ArticlesMembre/>         
+        </div>
+        
         {displayModalCommande}
         
     </>

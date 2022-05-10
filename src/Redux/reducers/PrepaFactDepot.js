@@ -1,6 +1,7 @@
 import {ADD_PREPA_FACT_DEPOT,
         ADD_ARTICLE_PREPA_FACT_DEPOT,
         ADD_BON_PREPA_FACT_DEPOT,
+        REMOVE_BON_PREPA_FACT_DEPOT,
         REMOVE_PREPA_FACT_DEPOT,
         REMOVE_ALL_PREPA_FACT_DEPOT} from '../Constantes'
 
@@ -42,7 +43,7 @@ const helperAddArticle = (state, action) => {
     return state
 }
 
-//helper add Article
+//helper add Bon
 const helperAddBon = (state, action) => {
     const bon = action.payload
     if (bon.user_id in state) {
@@ -53,6 +54,24 @@ const helperAddBon = (state, action) => {
             state[bon.user_id].bons = [...oldBons, bon.id]
             state[bon.user_id].nbBons = Number(oldNbBons) + 1
             state[bon.user_id].montant = Number(oldMontant) - Number(1 * bon.montant)
+        }
+    }
+    return state
+}
+
+//helper remove Bon
+const helperRemoveBon = (state, action) => {
+    const bon = action.payload
+    if (bon.user_id in state) {
+        if (state[bon.user_id].bons.includes(bon.id)) {
+            const oldBons = state[bon.user_id].bons
+            const oldNbBons = state[bon.user_id].nbBons
+            const oldMontant = state[bon.user_id].montant
+            if (state[bon.user_id].bons.indexOf(bon.id) !== -1) {
+                state[bon.user_id].bons = oldBons.filter(data => (data.id !== bon.id))
+                state[bon.user_id].nbBons = Number(oldNbBons) - 1
+                state[bon.user_id].montant = Number(oldMontant) + Number(1 * bon.montant)
+            }
         }
     }
     return state
@@ -80,6 +99,10 @@ const reducerPrepaFactDepot = (state=initialState, action) => {
 
         case ADD_BON_PREPA_FACT_DEPOT:
             state = helperAddBon(state, action)
+            return state
+            
+        case REMOVE_BON_PREPA_FACT_DEPOT:
+            state = helperRemoveBon(state, action)
             return state
 
         case REMOVE_PREPA_FACT_DEPOT:

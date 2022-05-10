@@ -1,6 +1,7 @@
 import {ADD_PREPA_FACT_DEPOT,
         ADD_ARTICLE_PREPA_FACT_DEPOT,
         ADD_BON_PREPA_FACT_DEPOT,
+        REMOVE_BON_PREPA_FACT_DEPOT,
         REMOVE_PREPA_FACT_DEPOT,
         REMOVE_ALL_PREPA_FACT_DEPOT} from '../Constantes'
 
@@ -27,6 +28,14 @@ export const addArticlePrepaFactDepot = article => {
 export const addBonPrepaFactDepot = bon => {
     return {
         type: ADD_BON_PREPA_FACT_DEPOT,
+        payload: bon
+    }
+}
+
+//Action: Ajout d'un article dans une prepa facture
+export const removeBonPrepaFactDepot = bon => {
+    return {
+        type: REMOVE_BON_PREPA_FACT_DEPOT,
         payload: bon
     }
 }

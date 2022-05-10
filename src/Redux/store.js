@@ -13,6 +13,7 @@ import reducerFactures from './reducers/Factures'
 import reducerParams from './reducers/Parametres'
 import reducerPrepaFactures from './reducers/PrepaFactures'
 import reducerPrepaFactDepot from './reducers/PrepaFactDepot'
+import reducerBonsDepot from './reducers/BonsDepot'
 
 
 const rootReducer = combineReducers({
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
     commandes: reducerCommandes,
     factures: reducerFactures,
     depot: reducerDepot,
+    bonsDepot: reducerBonsDepot,
     parametres: reducerParams,
     prepaFactDepot: reducerPrepaFactDepot,
     //ajouter les reducer ici

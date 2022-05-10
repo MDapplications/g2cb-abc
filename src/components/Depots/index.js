@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import ContainerDepot from '../../containers/ContainerDepot'
+import ContainerDepot from '../../containers/Depot'
 import { addCommande } from '../../Redux/actions/Commandes'
 import { addArticleDepot } from '../../Redux/actions/Depot'
 import { FirebaseContext } from '../Firebase'
-import { addArticlePrepaFactDepot, addPrepaFactDepot } from '../../Redux/actions/PrepaFactDepot'
+import { addArticlePrepaFactDepot, addBonPrepaFactDepot, addPrepaFactDepot } from '../../Redux/actions/PrepaFactDepot'
 import { Button } from 'react-bootstrap'
+import { addBonDepot } from '../../Redux/actions/BonsDepot'
+import ModalBonsDepot from '../ModalBonsDepot'
 
 const Depots = () => {
 
@@ -16,9 +18,11 @@ const Depots = () => {
     //Redux
     const articlesDepot = useSelector(state => state.depot)
     const listFactures = useSelector(state => state.prepaFactDepot)
+    const bonsDepot = useSelector(state => state.bonsDepot)
 
     //State
     const [currentYear] = useState(new Date().getFullYear())
+    const [openModalBons, setOpenModalBons] = useState(false)
 
 
     //Initialisation des compteurs
@@ -37,6 +41,20 @@ const Depots = () => {
                 console.log('firebase.getArticleDepot', error);
             })
 
+        }
+
+        //Getting des commandes
+        if(!localStorage.getItem('BonsDepot')) {
+            console.log("Création de la liste des bons pour dépôt")
+            firebase.getBonDepot()
+            .then((docs) => {
+                docs.forEach(doc => {
+                    dispatch(addBonDepot(doc.data()))
+                })
+            })
+            .catch(err => {
+                console.log('firebase.getBonDepot', err);
+            })
         }
 
         //Getting des commandes
@@ -73,23 +91,27 @@ const Depots = () => {
                 }
             }
         })
-
+        bonsDepot.forEach(bon => {
+            if (bon.forFacture){
+                if (bon.user_id in listFactures) {
+                    if (!(listFactures[bon.user_id]['bons'].includes(bon.id))) {
+                        dispatch(addBonPrepaFactDepot(bon))
+                    }       
+                }
+            }
+        })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [articlesDepot])
+    }, [articlesDepot, bonsDepot])
+   
+
+    //fermeture du modal
+    const hideModal = () => setOpenModalBons(false)
+
+    // Affichage ou non du Modal des bons
+    const displayModalBons = openModalBons && <ModalBonsDepot hideModal={hideModal}/>
 
 
-    const handleTest = () => {
-        firebase.getBonDepot()
-        .then((docs) => {
-            docs.forEach(doc => console.log(doc.data()))
-        })
-        .catch(err => {
-            console.log('firebase.getBonDepot', err);
-        })
-    }
-
-
-
+    //render
     return (
         <>
             <main role='main'>
@@ -99,10 +121,10 @@ const Depots = () => {
                         <p>Gérer les articles du dépôt. Vous pouvez facturer ou retourner les articles depuis cet espace.</p>
                     </div>
 
-                    <div className='d-flex justify-content-end align-items-center'>
-                        <span className='pe-5'>
-                            <Button variant='success' onClick={handleTest}>test</Button>
-                        </span>                        
+                    <div className='d-flex justify-content-end align-items-center pe-3'>
+                        <Button variant='dark' className='me-2' onClick={() => setOpenModalBons(true)}>Gestion des bons</Button>
+                        <Button variant='success' className='me-2'>Créer les factures</Button> 
+                        <Button variant='success'>Créer un bon de retour</Button>     
                     </div>
 
                 </div>
@@ -111,6 +133,8 @@ const Depots = () => {
             <div className='text-center justify-content-center m-4'>
                 <ContainerDepot/>            
             </div>
+
+            {displayModalBons}
         </>
         
     )
