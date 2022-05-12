@@ -252,7 +252,7 @@ const StandbyArticle = () => {
     }
 
     
-    //Création de la commande (c'est parti, WOOOOOOOooooooooooo !!!)
+    //Création de la commande
     const handleClick = () => {
         const id = numCommande
         const commande = {

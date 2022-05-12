@@ -27,7 +27,7 @@ const Factures = () => {
                 })
             })
             .catch((error) => {
-                console.log(error);
+                console.log('firebase.getFactures', error);
             })
 
         }

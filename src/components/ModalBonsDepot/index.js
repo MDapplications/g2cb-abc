@@ -84,6 +84,7 @@ const ModalBonsDepot = ({hideModal}) => {
         if (selectBon.forFacture) {
             firebase.disableForFactureBon(selectBon.id)
             .then(() => {
+                console.log('removeBonPrepaFactDepot', selectBon)
                 dispatch(removeBonPrepaFactDepot(selectBon))
                 dispatch(facturableBonDepot(selectBon.id, !selectBon.forFacture))
                 setSelectBon({
@@ -97,6 +98,7 @@ const ModalBonsDepot = ({hideModal}) => {
         } else {
             firebase.enableForFactureBon(selectBon.id)
             .then(() => {
+                console.log('addBonPrepaFactDepot', selectBon)
                 dispatch(addBonPrepaFactDepot(selectBon))
                 dispatch(facturableBonDepot(selectBon.id, !selectBon.forFacture))
                 setSelectBon({
@@ -117,18 +119,18 @@ const ModalBonsDepot = ({hideModal}) => {
         <div className='modalBackground'>
             <div className='modal-dialog card-form'>
                 <div className='modal-content'>
-                    <div className='modal-header'>
-                        <h5 className='modal-title'>Ajouter des bons dans une facture</h5> 
+                    <div className='modal-header' style={{backgroundColor: '#f8fdff'}}>
+                        <h5 className='modal-title'>Gestion des bons</h5> 
                     </div>
                     <div className='modal-body'>
                         <Form.Label>
-                            Ajouter un bon pour la facture de :
+                            Ajouter/Retirer un bon pour la facture de :
                         </Form.Label>
                         <Form.Select onChange={e => handleChangeUser(e)}>
                             {tabUserName.map((userName, index) => <option key={index} value={userName}>{userName}</option>)}
                         </Form.Select> 
-                        <Form.Label>
-                            Bons en attente pour ce membre :
+                        <Form.Label className='mt-4'>
+                            Bon(s) en attente pour ce membre :
                         </Form.Label>
                         <Form.Select htmlSize={5} onChange={e => handleChangeBon(e)}>
                             {tabBons.map((bon, index) =>    

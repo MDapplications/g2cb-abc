@@ -100,8 +100,8 @@ const Home = () => {
                     forRetour: false,
                     commande: '',
                     facture: '',
-                    depot: false,
-                    retour: false,
+                    retour: '',
+                    depot: false
                 }
 
                 firebase.addArticle(uid, article)
@@ -144,6 +144,7 @@ const Home = () => {
                         //-- statut --
                         standby: true,
                         forCommande: true,
+                        forFacture: false,
                         commande: '',
                         facture: ''
                     }

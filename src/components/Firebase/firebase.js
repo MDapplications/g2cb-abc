@@ -159,8 +159,11 @@ class Firebase {
     //récupération de la liste d'article d'une commande
     getArticleCommande = (num_commande) => getDocs(query(collection(this.db, "articles"), where("commande", "==", num_commande)))
 
-    //récupération de la liste d'article d'une commande
+    //récupération de la liste d'article d'une facture
     getArticleFacture = (num_facture) => getDocs(query(collection(this.db, "articles"), where("facture", "==", num_facture)))
+
+    //récupération de la liste d'article d'un bon de retour
+    getArticleRetour = (num_retour) => getDocs(query(collection(this.db, "articles"), where("retour", "==", num_retour)))
 
     //L'article est ajouté à une commande
     addArticleCommande = (uid, data) => updateDoc(doc(this.db, "articles", uid), {
@@ -172,7 +175,16 @@ class Firebase {
 
     //L'article est ajouté à une facture
     addArticleFacture = (uid, numFacture) => updateDoc(doc(this.db, "articles", uid), {
-        facture: numFacture
+        facture: numFacture,
+        forFacture: false,
+        depot: false
+    })
+
+    //L'article est ajouté à un bon de retour
+    addArticleRetour = (uid, numRetour) => updateDoc(doc(this.db, "articles", uid), {
+        retour: numRetour,
+        forRetour: false,
+        depot: false
     })
 
 
@@ -222,7 +234,8 @@ class Firebase {
 
     //L'article est ajouté à une facture
     addBonFacture = (uid, numFacture) => updateDoc(doc(this.db, "bons", uid), {
-        facture: numFacture
+        facture: numFacture,
+        forFacture: false
     })
 
 
@@ -255,7 +268,19 @@ class Firebase {
     disableReglerFacture = (uid) => updateDoc(doc(this.db, "factures", uid), {regler: false})
 
 
- 
+    //------------------------------------------------------------------------------------------
+    //---------------------------------        RETOURS        ----------------------------------
+    //------------------------------------------------------------------------------------------
+    //enregistrer une commande dans firestore
+    addRetour = (id, retour) => setDoc(doc(this.db, "retours", id), retour)
+
+    //récupération de la liste des commandes de l'année en cours
+    getRetours = (year) => getDocs(query(collection(this.db, "retours"), where("year", "==", year)))
+
+    //Le bon sera mise dans une commande
+    enableRetournerRetour = (uid) => updateDoc(doc(this.db, "retours", uid), {retourner: true})
+    //Le bon ne sera pas mise dans une commande
+    disableRetournerRetour = (uid) => updateDoc(doc(this.db, "retours", uid), {retourner: false})
 
 }
 

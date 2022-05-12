@@ -13,8 +13,7 @@ const ContainerFactures = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    //Selector (redux)
-    //const user = useSelector(state => state.user)
+    //Redux
     const listFactures = useSelector(state => state.factures)
 
     //State
@@ -129,7 +128,7 @@ const ContainerFactures = () => {
         )
     })
     :
-    <p>Il n'y a eu aucune facture pour le moment...</p>
+    <p>Il n'y a aucune facture pour le moment...</p>
 
 
     //render

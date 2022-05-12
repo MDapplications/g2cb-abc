@@ -68,7 +68,8 @@ const helperRemoveBon = (state, action) => {
             const oldNbBons = state[bon.user_id].nbBons
             const oldMontant = state[bon.user_id].montant
             if (state[bon.user_id].bons.indexOf(bon.id) !== -1) {
-                state[bon.user_id].bons = oldBons.filter(data => (data.id !== bon.id))
+                console.log(oldBons.filter(data => data.id !== bon.id))
+                state[bon.user_id].bons = oldBons.filter(data => data !== bon.id)
                 state[bon.user_id].nbBons = Number(oldNbBons) - 1
                 state[bon.user_id].montant = Number(oldMontant) + Number(1 * bon.montant)
             }

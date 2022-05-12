@@ -20,6 +20,7 @@ import FacturePrint from '../FacturePrint';
 import Parametres from '../Parametres';
 import FormBonMembre from '../FormBonMembre';
 import FormArticleMembre from '../FormArticleMembre';
+import RetourPrint from '../RetourPrint';
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
           
           <Route path='/commandePrint/:commandeId' element={<CommandePrint/>}></Route>
           <Route path='/facturePrint/:factureId' element={<FacturePrint/>}></Route>
+          <Route path='/retourPrint/:retourId' element={<RetourPrint/>}></Route>
 
           <Route path='/mentions' element={<Mentions/>}/>
           <Route path='/conditions' element={<Cgu/>}/>
