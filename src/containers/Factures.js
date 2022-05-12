@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { Accordion, Badge, Button, Card } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -7,7 +7,6 @@ import { addArticleFacture, addBonFacture, reglerFacture } from '../Redux/action
 
 const ContainerFactures = () => {
     
-
     //Hooks
     const firebase = useContext(FirebaseContext)
     const dispatch = useDispatch()
@@ -15,10 +14,6 @@ const ContainerFactures = () => {
 
     //Redux
     const listFactures = useSelector(state => state.factures)
-
-    //State
-    const [currentYear] = useState(new Date().getFullYear())
-
 
     // afficher / Imprimer la commande
     const handleShow = facture => {
@@ -48,7 +43,7 @@ const ContainerFactures = () => {
         }  
     }
 
-
+    //Passer la facture comme régler (ou non)
     const handleToggleRegler = facture => {
         if (facture.regler) {
             //Retiré de la commande
@@ -71,7 +66,7 @@ const ContainerFactures = () => {
         }
     }
 
-
+    //affichage de l'etat de l'article
     const displayStateArticle = value => {
         if (value) {
             return <Badge bg="info" className='me-2'>Réglée</Badge>
@@ -80,12 +75,13 @@ const ContainerFactures = () => {
         }
     }
 
+    //Affichage au format prix
     const currencyLocalPrice = prix => {
         return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
     }
 
 
-    
+    //affichage des factures
     const displayFactures = listFactures.length ? 
     listFactures.map(facture => {
         return (

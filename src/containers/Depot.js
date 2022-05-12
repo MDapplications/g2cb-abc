@@ -1,18 +1,17 @@
 import React, { useContext } from 'react'
 import { Accordion, Badge, Button, Card } from 'react-bootstrap'
-import { HiOutlineCheck } from 'react-icons/hi'
+import { FirebaseContext } from '../components/Firebase'
 import { useDispatch, useSelector } from 'react-redux'
+import { HiOutlineCheck } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
-import { FirebaseContext } from '../components/Firebase'
-import { addArticleCommande, addBonCommande } from '../Redux/actions/Commandes'
 import { facturableArticleDepot, retournableArticleDepot } from '../Redux/actions/Depot'
+import { addArticleCommande, addBonCommande } from '../Redux/actions/Commandes'
 import { removeAllPrepaFactDepot } from '../Redux/actions/PrepaFactDepot'
 
 
 const ContainerDepot = () => {
     
-
     //Hooks
     const firebase = useContext(FirebaseContext)
     const dispatch = useDispatch()
@@ -116,7 +115,7 @@ const ContainerDepot = () => {
     }
 
 
-
+    //Affichage de l'etat de l'article (à facturer / à retourner)
     const displayStateArticle = article => {
         if (article.forFacture) {
             return <>
@@ -148,6 +147,7 @@ const ContainerDepot = () => {
     }
 
 
+    //Désactivation du bouton 'pour facturation'
     const disableBtnFacture = article => {
         if (article.forRetour) {
             return true 
@@ -171,8 +171,6 @@ const ContainerDepot = () => {
         return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
     }
         
-
-
 
     //Affiche les articles
     const displayArticles = articlesDepot.length ? 

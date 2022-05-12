@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap'
 
 const Modal2Confirmation = ({hideModal, handleConfirm, textValue}) => {
 
+    //Texte à afficher sur le message de confirmation
     const displayText = textValue !== '' 
     ? <p className='text-center'>{textValue}</p> 
     : <></>

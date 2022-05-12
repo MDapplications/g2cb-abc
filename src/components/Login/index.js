@@ -7,13 +7,18 @@ import { removeAllDepot } from '../../Redux/actions/Depot'
 import { removeAllCommande } from '../../Redux/actions/Commandes'
 import { removeAllFacture } from '../../Redux/actions/Factures'
 import { removeAllBonDepot } from '../../Redux/actions/BonsDepot'
+import { removeAllRetour } from '../../Redux/actions/Retours'
+import { removeAllUsers } from '../../Redux/actions/Utilisateurs'
 
 
 const Login = ({showModal}) => {
 
+    //Hooks
     const firebase = useContext(FirebaseContext)
     const navigate = useNavigate()
     const dispatch = useDispatch()
+
+    //Redux
     const listFactures = useSelector(state => state.prepaFactures)
 
     // variable d'etat du formulaire
@@ -52,7 +57,9 @@ const Login = ({showModal}) => {
         dispatch(removeAllDepot())
         dispatch(removeAllBonDepot())
         dispatch(removeAllCommande())
-        dispatch(removeAllFacture())      
+        dispatch(removeAllFacture()) 
+        dispatch(removeAllRetour())
+        dispatch(removeAllUsers())       
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
@@ -77,6 +84,8 @@ const Login = ({showModal}) => {
             localStorage.removeItem('Factures')
             localStorage.removeItem('Depot')
             localStorage.removeItem('BonsDepot')
+            localStorage.removeItem('Retours')
+            localStorage.removeItem('listUsers')
             navigate('/')
         })
         .catch(error => {
@@ -99,7 +108,7 @@ const Login = ({showModal}) => {
         <span>{error.message}</span>
     </div>
 
-
+    //render
     return (
         <div className='d-flex justify-content-center' style={{marginTop: '50px'}}>
             <div className='card text-dark bg-light card-form'>

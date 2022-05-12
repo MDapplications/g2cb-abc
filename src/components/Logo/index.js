@@ -1,0 +1,1 @@
+export const Logo = 'https://drive.google.com/uc?export=view&id=1M6472roobVtP4nMvsOoSsCaO_d9k-nFj'

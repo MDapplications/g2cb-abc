@@ -7,9 +7,16 @@ import BtnLogout from '../BtnLogout'
 
 const NavbarHome = () => {
 
-    //const navigate = useNavigate()
+    //State
     const [username, setUsername] = useState("")
+
+    //Redux
     const user = useSelector(state => state.user)
+
+    //Style
+    const navBarColor = {
+        backgroundColor: '#bbbbbb'
+    }
 
 
     // Au chargement du composant
@@ -17,19 +24,15 @@ const NavbarHome = () => {
         setUsername(user.prenom + ' ' + user.nom)
     }, [user])
 
-    const navBarColor = {
-        backgroundColor: '#bbbbbb'
-    }
 
-    
-
+    //Affichage de l'accès au Dashboard
     const accessDashboard = user.role >= 2 ? 
     <Link className='nav-link-home' to='/admin'>Tableau de bord</Link>
     :
-    <span></span>
+    <></>
     
 
-
+    //render
     return (
         <nav className='navbar navbar-expand py-sm-0 navbar-light' style={navBarColor}>
             <div className='container-fluid'>
@@ -57,7 +60,6 @@ const NavbarHome = () => {
                         </li>
                         <ReactTooltip id="linkLardesport" place="left" effect="solid"/>
                     </ul>
-
 
                     <BtnLogout/>
 

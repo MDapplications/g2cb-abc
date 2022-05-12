@@ -1,16 +1,17 @@
 import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { connect } from 'react-redux'
 import {FirebaseContext} from '../Firebase'
 import { addUser } from '../../Redux/actions/Users'
-import { connect } from 'react-redux'
 
+
+const patternMdp = '^(?=.{8,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9]).*$'
 
 const Signup = ({hideModal}) => {
 
+    //Hooks
     const firebase = useContext(FirebaseContext)
     const navigate = useNavigate()
-
-    
 
     // variable d'etat du formulaire
     const data = {
@@ -47,17 +48,25 @@ const Signup = ({hideModal}) => {
 
         firebase.signupUser(email, password)
         .then(authUser => {
-            return firebase.addUser(authUser.user.uid, {
+            firebase.addUser(authUser.user.uid, {
                 prenom: prenom,
                 nom: nom,
                 email: email,
+                adresse: '',
+                code_postal: '',
+                ville: '',
+                club: false,
                 role: 1
             })
-        })
-        .then(() => {
-            setLoginData({...data}) // on revient à l'etat initial
-            setError('')
-            navigate('/')
+            .then(() => {
+                setLoginData({...data}) // on revient à l'etat initial
+                setError('')
+                navigate('/')
+            })
+            .catch(error => {
+                setError(error)
+                setLoginData({...data}) // on revient à l'etat initial
+            })
         })
         .catch(error => {
             setError(error)
@@ -82,7 +91,6 @@ const Signup = ({hideModal}) => {
     <div className='d-flex justify-content-center mb-2 alert alert-danger' role='alert'>
         <span>{error.message}</span>
     </div>
-
 
 
     // render
@@ -145,7 +153,8 @@ const Signup = ({hideModal}) => {
                                     type='password' 
                                     className='form-control' 
                                     id='password'
-                                    minLength='6'
+                                    minLength='8'
+                                    pattern={patternMdp}
                                     value={password}
                                     onChange={handleChange}/>
                             </div>
@@ -155,7 +164,7 @@ const Signup = ({hideModal}) => {
                                     type='password' 
                                     className='form-control' 
                                     id='confirmPassword'
-                                    minLength='6'
+                                    minLength='8'
                                     value={confirmPassword}
                                     onChange={handleChange}/>
                             </div>

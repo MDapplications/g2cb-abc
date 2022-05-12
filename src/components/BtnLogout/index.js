@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
+import ReactTooltip from 'react-tooltip'
 import { HiOutlineLogout } from 'react-icons/hi'
 import { useDispatch } from 'react-redux'
 import { FirebaseContext } from '../Firebase'
 import { removeUser } from '../../Redux/actions/Users'
 import { removeParams } from '../../Redux/actions/Parametres'
-import ReactTooltip from 'react-tooltip'
 
 
 const BtnLogout = () => {

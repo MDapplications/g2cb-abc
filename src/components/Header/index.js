@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navbar } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import logo from '../../images/logo NB.png'
+import { Logo } from '../Logo'
 
 const Header = () => {
     return (
@@ -10,7 +10,7 @@ const Header = () => {
                     <Link to='/' className='display-6 text-decoration-none text-white mx-2'>
                         <img
                             alt='logo du club'
-                            src={logo}
+                            src={Logo}
                             width="50"
                             height="50"
                             className="d-inline-block align-center"

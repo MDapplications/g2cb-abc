@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, Form } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { FirebaseContext } from '../Firebase'
+import { Button, Form } from 'react-bootstrap'
 import { facturableBonDepot } from '../../Redux/actions/BonsDepot'
 import { addBonPrepaFactDepot, removeBonPrepaFactDepot } from '../../Redux/actions/PrepaFactDepot'
-import { FirebaseContext } from '../Firebase'
+
 
 const ModalBonsDepot = ({hideModal}) => {
     
@@ -46,6 +47,7 @@ const ModalBonsDepot = ({hideModal}) => {
     }, [tabUserName])
 
 
+    //change l'affichage du bouton Ajouter/Retirer un bon à une facture
     useEffect(() => {
         if (selectBon.forFacture) {
             setCaptionBtnBon('Retirer')
@@ -54,10 +56,6 @@ const ModalBonsDepot = ({hideModal}) => {
         }
     }, [selectBon])
     
-
-
-
-
 
     // Sur changement de membre
     const handleChangeUser = event => {

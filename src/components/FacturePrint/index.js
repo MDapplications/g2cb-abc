@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {Button, Table} from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import './style.css'
-import Logo from '../../images/logo NB.png'
 import { useSelector } from 'react-redux'
-
+import { Logo } from '../Logo'
+import './style.css'
 
 
 const FacturePrint = () => {
@@ -62,14 +60,17 @@ const FacturePrint = () => {
     }, [currentFacture, factureId])
 
 
+    //Retour page précédente
     const handleBack = () => {
         navigate(-1)
     }
 
+    //affichage de l'aperçu pour impression
     const handlePrint = () => {
         window.print()
     }
     
+    //Styles
     const tableStyle = {
         paddingTop: '2px',
         paddingBottom: '2px'
@@ -80,6 +81,7 @@ const FacturePrint = () => {
         paddingBottom: '2px',
         textAlign: 'center'
     }
+
 
     //Affiche les articles
     const displaylistArticle = currentFacture.nbArticles > 0 && 
@@ -101,7 +103,7 @@ const FacturePrint = () => {
     })
 
 
-    //Affiche les articles
+    //Affiche les bons
     const displaylistBon = currentFacture.nbBons > 0 && 
         currentFacture.bons.map(bon => {
             return (
@@ -131,7 +133,7 @@ const FacturePrint = () => {
             </div>
 
             <div className='page-container hidden-on-narrow'>
-                <div className='pdf-page size-a4-portrait'>
+                <div className='pdf-page size-a4-portrait portrait'>
                 <div className='inner-page'>
                     <div className='pdf-header d-flex justify-content-between'>
                         <span>

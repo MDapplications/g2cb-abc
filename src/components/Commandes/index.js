@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import ContainerCommandes from '../../containers/Commandes'
-import { addCommande } from '../../Redux/actions/Commandes'
 import { FirebaseContext } from '../Firebase'
-
+import { useDispatch } from 'react-redux'
+import { addCommande } from '../../Redux/actions/Commandes'
+import ContainerCommandes from '../../containers/Commandes'
 
 const Commandes = () => {
 
@@ -32,17 +31,10 @@ const Commandes = () => {
             })
         }
 
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentYear])
 
-
-
-
-
-
-
-
+    //render
     return (
         <>
             <main role='main'>

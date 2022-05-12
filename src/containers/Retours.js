@@ -13,7 +13,6 @@ const ContainerRetour = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-
     //Redux
     const listRetours = useSelector(state => state.retours)
 
@@ -62,7 +61,7 @@ const ContainerRetour = () => {
     }
 
 
-
+    //Affichage de l'etat des retours
     const displayStateRetour = value => {
         if (value) {
             return <Badge bg="info" className='me-2'>Retourné</Badge>
@@ -71,11 +70,13 @@ const ContainerRetour = () => {
         }
     }
 
+    //Affichage au format prix
     const currencyLocalPrice = prix => {
         return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
     }
 
-
+    
+    //affichage des bon de retours
     const displayRetours = listRetours.length ? 
     listRetours.map(retour => {
         return (

@@ -6,6 +6,7 @@ export const INIT_COMPTEURS = "INIT_COMPTEURS"
 
 // Users
 export const ADD_USER = "ADD_USER"
+export const UPDATE_USER = "UPDATE_USER"
 export const REMOVE_USER = "REMOVE_USER"
 
 //Parametres
@@ -91,3 +92,11 @@ export const ADD_ARTICLE_RETOUR = "ADD_ARTICLE_RETOUR"
 export const RETOURNER_RETOUR = "RETOURNER_RETOUR"
 export const REMOVE_RETOUR = "REMOVE_RETOUR"
 export const REMOVE_ALL_RETOUR = "REMOVE_ALL_RETOUR"
+
+
+//Gestion utilisateurs
+export const LOAD_USERS = "LOAD_USERS"
+export const ADD_USERS = "ADD_USERS"
+export const UPDATE_ROLE_USERS = "UPDATE_ROLE_USERS"
+export const DELETE_USERS = "DELETE_USERS"
+export const REMOVE_ALL_USERS = "REMOVE_ALL_USERS"

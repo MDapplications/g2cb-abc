@@ -1,15 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { FirebaseContext } from '../Firebase'
+import { Button } from 'react-bootstrap'
+import { toast } from 'react-toastify'
+import Modal2Confirmation from '../Modal2Confirmation'
 import ContainerArticles from '../../containers/ArticlesStandby'
 import { deleteArticleStandby, loadArticleStandby, removeArticleStandby } from '../../Redux/actions/ArticlesStandby'
 import { deleteBonStandby, loadBonStandby, removeBonStandby } from '../../Redux/actions/BonsStandby'
 import { initCompteurs, addCompteurCommande, addCompteurFacture } from '../../Redux/actions/Compteurs'
-import { FirebaseContext } from '../Firebase'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import Modal2Confirmation from '../Modal2Confirmation'
 import { addArticlePrepaFacture, addBonPrepaFacture, addPrepaFacture, removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
+import 'react-toastify/dist/ReactToastify.css'
+
 toast.configure()
 
 
@@ -69,6 +70,7 @@ const StandbyArticle = () => {
     }
 
 
+    //Récupération de l'utilisateur authentifié 'usersession'
     useEffect(() => {
         let listener = firebase.auth.onAuthStateChanged(user => {
             user ? setUserSession(user) : console.log('non authentifié !')

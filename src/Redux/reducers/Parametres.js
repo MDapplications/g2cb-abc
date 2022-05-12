@@ -2,9 +2,6 @@ import { ADD_PARAMETRE, REMOVE_PARAMETRE } from '../Constantes'
 
 //initial state
 const initialState = {
-    adresse: '',
-    code_postal: '',
-    ville: '',
     club: 'ABC',
     sendmail: ''
 }
@@ -18,9 +15,6 @@ const reducerParams = (state=initialState, action) => {
         case ADD_PARAMETRE:
             return {
                 ...state,
-                adresse: action.payload.adresse,
-                code_postal: action.payload.code_postal,
-                ville: action.payload.ville,
                 club: action.payload.club,
                 sendmail: action.payload.sendmail
             }

@@ -7,12 +7,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import BtnLogout from '../BtnLogout'
 
 
-
 const NavBarDashboard = () => {
 
-
+    //Redux
     const user = useSelector(state => state.user)
+
+    //Hooks
     const navigate = useNavigate()
+
+    //State
     const [username, setUsername] = useState('')
 
 

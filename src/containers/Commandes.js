@@ -14,12 +14,11 @@ const ContainerCommandes = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    //Selector (redux)
+    //Redux
     const listCommandes = useSelector(state => state.commandes)
 
     //State
     const [currentYear] = useState(new Date().getFullYear())
-    
 
 
     // afficher / Imprimer la commande
@@ -51,6 +50,7 @@ const ContainerCommandes = () => {
     }
 
 
+    //Affichage au format prix
     const currencyLocalPrice = prix => {
         return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
     }

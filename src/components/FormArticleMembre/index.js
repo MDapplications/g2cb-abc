@@ -10,9 +10,11 @@ const validQuantite = '^[1-9][0-9]*$'
 
 
 const AddArticle = ({addArticleMembre}) => {
- 
+    
+    //State : Date courante
     const [currentDate] = useState(new Date().toLocaleDateString())
 
+    //Constante
     const ArticleData = {
         reference: '',
         prix: '',
@@ -23,6 +25,7 @@ const AddArticle = ({addArticleMembre}) => {
         date: currentDate
     }
 
+    //Style
     const styleComment = {
         marginTop: '-.4rem',
         marginBottom: '1rem',
@@ -30,7 +33,7 @@ const AddArticle = ({addArticleMembre}) => {
         color: '#6c757d'
     }
 
-
+    //States
     const [article, setArticle] = useState(ArticleData)
     const [achat, setAchat] = useState(true)
     const [depot, setDepot] = useState(false)
@@ -72,9 +75,10 @@ const AddArticle = ({addArticleMembre}) => {
         setDepot(false)
     }
 
-    
+    //Destructuring
     const {reference, prix, quantite, variante, description} = article
 
+    //render
     return (
         <div className='d-flex justify-content-center'>
             <form className='w-25' onSubmit={handleSubmit}>

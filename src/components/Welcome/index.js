@@ -6,7 +6,10 @@ import Signup from '../Signup'
 
 const Welcome = () => {
     
+    //States
     const [openModal, setOpenModal] = useState(false)
+
+    //Hooks
     const firebase = useContext(FirebaseContext)
     const navigate = useNavigate()
 

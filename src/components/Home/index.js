@@ -1,36 +1,37 @@
 import React, { useContext, useEffect, useState } from 'react'
-import NavbarHome from '../NavbarHome'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { FirebaseContext } from '../Firebase'
-import { addUser } from '../../Redux/actions/Users'
-import { useDispatch, useSelector } from 'react-redux'
-import {removeArticleMembre} from '../../Redux/actions/ArticlesMembre'
-import { addParams } from '../../Redux/actions/Parametres'
-import {removeBonMembre} from '../../Redux/actions/BonsMembre'
 import emailjs from 'emailjs-com'
 import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import Modal2Confirmation from '../Modal2Confirmation'
+import { removeArticleMembre } from '../../Redux/actions/ArticlesMembre'
+import { addParams } from '../../Redux/actions/Parametres'
+import { removeBonMembre } from '../../Redux/actions/BonsMembre'
+import { addUser } from '../../Redux/actions/Users'
 import ArticlesMembre from '../../containers/ArticlesMembre'
+import Modal2Confirmation from '../Modal2Confirmation'
+import NavbarHome from '../NavbarHome'
+import 'react-toastify/dist/ReactToastify.css'
 
 toast.configure()
 
-
-
 const Home = () => {
 
-
+    //Environnement
     const {REACT_APP_EMAILJS_SERVICE_MAIL, REACT_APP_EMAILJS_PUBLIC_KEY} = process.env
 
+    //Redux
     const user = useSelector(state => state.user)
     const parametres = useSelector(state => state.parametres)
     const ArticlesMembreData= useSelector(state => state.articlesMembre)
     const BonsMembreData= useSelector(state => state.bonsMembre) 
     
+    //Hooks
     const firebase = useContext(FirebaseContext)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    //States
     const [userSession, setUserSession] = useState(null)
     const [openModalCommande, setOpenModalCommande] = useState(false)
 
@@ -40,23 +41,23 @@ const Home = () => {
         let listener = firebase.auth.onAuthStateChanged(user => {
             user ? setUserSession(user) : navigate('/login')
         })
-
-
-        if(!!userSession){
+        
+        if(userSession){
             firebase.getUser(userSession.uid)
             .then((doc) => { 
-                if (doc && doc.exists) {
+                if (doc && doc.exists) {         
+                    //Récupération de l'utilisateur dans redux
                     dispatch(addUser(doc.data()))
 
                     //Récupération des parametres
                     firebase.getParams()
                     .then(params => {
+                        //Récupération des paramètres dans Redux
                         dispatch(addParams(params.data()))
                     })
                     .catch(err => {
                         console.log('firebase.getParams',err)
                     })
-
                 }
             })
             .catch((error) => {
@@ -71,6 +72,40 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userSession])
 
+
+    //Suppresion du compte ayant un role mis en invité
+    useEffect(() => {
+        if (user.prenom !== '' && user.nom !== '') {
+            if (user.role === 0) {
+                if (userSession !== null) {
+                    firebase.deleteCurrentUser(userSession.uid)
+                    .then(() => {
+                        firebase.deleteAuthUser(userSession)
+                        .then(() => {
+                            //notification indiquant une erreur lors de l'envoie de la commande
+                            toast.error("Votre compte a été supprimé !", {
+                                position: "bottom-center",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                            })
+                        })
+                        .catch(err => {
+                            console.log('firebase.deleteAuthUser', err)
+                        })
+                    })
+                    .catch(err => {
+                        console.log('firebase.deleteCurrentUser', err)
+                    })
+                }
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user])
+    
 
     //Clique bouton "J'ai fini ma commande"
     const handleClick = () => {

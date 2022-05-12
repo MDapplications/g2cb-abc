@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import '../../App.css'
 import ErrorPage from '../ErrorPage';
 import Footer from '../Footer';
 import Header from '../Header';
@@ -21,9 +20,10 @@ import Parametres from '../Parametres';
 import FormBonMembre from '../FormBonMembre';
 import FormArticleMembre from '../FormArticleMembre';
 import RetourPrint from '../RetourPrint';
+import './App.css'
 
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Header/>

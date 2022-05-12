@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import ContainerFactures from '../../containers/Factures'
-import { addFacture } from '../../Redux/actions/Factures'
 import { FirebaseContext } from '../Firebase'
+import { useDispatch } from 'react-redux'
+import { addFacture } from '../../Redux/actions/Factures'
+import ContainerFactures from '../../containers/Factures'
+
 
 const Factures = () => {
 
@@ -16,7 +17,6 @@ const Factures = () => {
 
     //Initialisation des compteurs
     useEffect(() => {
-        
         //Getting des factures
         if(!localStorage.getItem('Factures')) {
             console.log("Création de la liste des factures")
@@ -29,13 +29,9 @@ const Factures = () => {
             .catch((error) => {
                 console.log('firebase.getFactures', error);
             })
-
         }
-
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentYear])
-
 
 
     //render

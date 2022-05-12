@@ -4,7 +4,7 @@ import { ADD_ARTICLE_MEMBRE, REMOVE_ARTICLE_MEMBRE, REMOVE_ALL_ARTICLE_MEMBRE } 
 export const addArticleMembre = data => {
     return {
         type: ADD_ARTICLE_MEMBRE,
-        payload: data  // object: articleMembre
+        payload: data
     }
 }
 

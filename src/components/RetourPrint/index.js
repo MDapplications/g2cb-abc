@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import {Button, Table} from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import "./style.css"
-import Logo from '../../images/logo NB.png'
 import { useSelector } from "react-redux"
-
-
+import {Button, Table} from 'react-bootstrap'
+import { Logo } from '../Logo'
+import "./style.css"
 
 
 const RetourPrint = () => {
@@ -109,7 +106,7 @@ const RetourPrint = () => {
             </div>
 
             <div className="page-container hidden-on-narrow">
-                <div className="pdf-page size-a4-paysage">
+                <div className="pdf-page size-a4-paysage paysage">
                 <div className="inner-page">
                     <div className="pdf-header d-flex justify-content-between">
                         <span>

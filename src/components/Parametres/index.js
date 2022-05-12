@@ -1,9 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Card, Col, Form, ListGroup, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { addParams } from '../../Redux/actions/Parametres'
 import { FirebaseContext } from '../Firebase'
 import { toast } from 'react-toastify'
+import { updateUser } from '../../Redux/actions/Users'
+import { addParams } from '../../Redux/actions/Parametres'
 import 'react-toastify/dist/ReactToastify.css'
 
 toast.configure()
@@ -16,9 +17,43 @@ const Parametres = () => {
 
     //Redux
     const parametres = useSelector(state => state.parametres)
+    const user = useSelector(state => state.user)
+    
 
     //State
-    const [paramsData, setParamsData] = useState(parametres)
+    const [userSession, setUserSession] = useState(null)
+    const [paramsData, setParamsData] = useState({
+        club: 'ABC',
+        sendmail: '',
+        adresse: '',
+        code_postal: '',
+        ville: ''        
+    })
+
+
+    //Recuperation du UserSession
+    useEffect(() => {
+        let listener = firebase.auth.onAuthStateChanged(user => {
+            user ? setUserSession(user) : console.log('non authentifié !')
+        })
+        return () => listener()       
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userSession])
+
+
+    //Au chargement du composant
+    useEffect(() => {
+        const {club, sendmail} = parametres
+        const {adresse, code_postal, ville} = user
+        setParamsData({
+            club,
+            sendmail,
+            adresse,
+            code_postal,
+            ville        
+        })
+    }, [parametres, user])
+    
 
 
     //sur changement d'etat des input form
@@ -30,27 +65,41 @@ const Parametres = () => {
 
     //Modifications des parametres
     const handleSubmit = () => {
-        firebase.updateParams(paramsData)
-        .then(() => {
-            dispatch(addParams(paramsData))
+        const {club, sendmail} = paramsData
+        const {adresse, code_postal, ville} = paramsData
+        const param = {club, sendmail}
 
-            //notification indiquant que la commande à bien était envoyé
-            toast.success('Paramètres modifié avec succès !', {
-                position: "bottom-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
+        firebase.updateParams(param)
+        .then(() => {
+            dispatch(addParams(param))
+
+            firebase.updateAdresseUser(userSession.uid, {adresse, code_postal, ville})
+            .then(() => {
+                dispatch(updateUser({adresse, code_postal, ville}))
+
+                //notification indiquant que la commande à bien était envoyé
+                toast.success('Paramètres modifié avec succès !', {
+                    position: "bottom-center",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                })
             })
+            .catch(err => {
+                console.log('firebase.updateAdresseUser', err)
+            })
+          
         })
         .catch(err => {
-            console.log(err)
+            console.log('firebase.updateParams', err)
         })
     }
 
 
+    //render
     return (
         <div className='text-center justify-content-center m-4'>
             <Card>

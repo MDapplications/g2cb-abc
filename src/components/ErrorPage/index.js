@@ -2,16 +2,17 @@ import React from 'react'
 import {useNavigate} from 'react-router-dom'
 
 
-
-
 const ErrorPage = () => {
 
+    //Hooks
     const navigate = useNavigate()
 
+    //redirection au bout de 3sec
     setTimeout(() => {
       navigate('/')
     }, 3000)
 
+    //render
     return (
         <div className='mt-3 component-center'>
        

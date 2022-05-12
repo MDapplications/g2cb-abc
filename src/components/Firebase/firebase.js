@@ -7,7 +7,8 @@ import {
     signOut, 
     sendPasswordResetEmail, 
     setPersistence,
-    browserSessionPersistence} from 'firebase/auth'
+    browserSessionPersistence,
+    deleteUser} from 'firebase/auth'
 import { getFirestore, doc, setDoc, getDoc, where, getDocs, collection, query, updateDoc, deleteDoc } from "firebase/firestore"
 
 const {
@@ -46,7 +47,6 @@ class Firebase {
     }
 
     
-        
     //Inscription
     signupUser = (email, password) => createUserWithEmailAndPassword(this.auth, email, password)
     
@@ -62,6 +62,9 @@ class Firebase {
 
     //Récuperer le mot de passe
     passwordReset = (email) => sendPasswordResetEmail(this.auth, email)
+
+    //suppression d'un utilisateur
+    deleteAuthUser = user => deleteUser(user)
 
 
 
@@ -82,15 +85,24 @@ class Firebase {
     */
     getUser = (uid) => getDoc(doc(this.db, "users", uid))
 
+    // récupérer tous les articles dans firestore
+    getUsers = () => getDocs(collection(this.db, "users"))
+
+    //récupération du user 'club'
+    getClubUser = () => getDocs(query(collection(this.db, "users"), where("club", "==", true)))
+
     // Mise à jour du role d'un utilisateur
-    updateAdminUser = (uid, data) => updateDoc(doc(this.db, "users", uid), {role: data})
+    updateRoleUser = (uid, role) => updateDoc(doc(this.db, "users", uid), {role: role})
 
     // Enregistrement des données postale dans le document utilisateur
     updateAdresseUser = (uid, data) => updateDoc(doc(this.db, "users", uid), {
         adresse: data.adresse,
-        cp: data.cp,
+        code_postal: data.code_postal,
         ville: data.ville
     })
+
+    //Suppression current User
+    deleteCurrentUser = (uid) => deleteDoc(doc(this.db, "users", uid))
 
 
     //------------------------------------------------------------------------------------------
@@ -105,9 +117,6 @@ class Firebase {
 
     // Mise à jour du role d'un utilisateur
     updateParams = (data) => updateDoc(doc(this.db, "params", '0'), {
-        adresse: data.adresse,
-        code_postal: data.code_postal,
-        ville: data.ville,
         club: data.club,
         sendmail: data.sendmail
     })

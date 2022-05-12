@@ -33,12 +33,6 @@ code {
 }
 
 
-@page { 
-  size: auto;     /* auto is the initial value */ 
-  margin: 0mm;    /* this affects the margin in the printer settings */ 
-  /**size: portrait;  portrait **/
-  /**size: landscape;   paysage **/
-}
 
 .pdf-footer {
   position: absolute;
@@ -110,7 +104,13 @@ code {
 }
 
 
+@media print
+{               
+  @page port { size: portrait; margin: 0mm; }
+  .portrait { page: port; }
 
-
+  @page land { size: landscape; margin: 0mm; }
+  .paysage { page: land; }                
+}
 
 

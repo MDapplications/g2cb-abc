@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import ContainerRetour from '../../containers/Retours'
-import { addArticleRetour, addRetour } from '../../Redux/actions/Retours'
 import { FirebaseContext } from '../Firebase'
+import ContainerRetour from '../../containers/Retours'
+import { addRetour } from '../../Redux/actions/Retours'
 
 
 const Retours = () => {
@@ -15,7 +15,7 @@ const Retours = () => {
     //States
     const [currentYear] = useState(new Date().getFullYear())
 
-
+    //Au chargement du composant
     useEffect(() => {
         
         //Getting des retours
@@ -37,7 +37,7 @@ const Retours = () => {
     }, [])
     
 
-
+    //render
     return (
         <>
             <main role='main'>

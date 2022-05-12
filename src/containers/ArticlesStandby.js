@@ -14,12 +14,13 @@ const ContainerArticles = ({showModal}) => {
 
     //Hooks
     const firebase = useContext(FirebaseContext)
+    const dispatch = useDispatch()
+
+    //Redux
     const articlesStandby = useSelector(state => state.articlesStandby)
     const bonsStandby = useSelector(state => state.bonsStandby)
     const user = useSelector(state => state.user)
     const parametres = useSelector(state => state.parametres)
-    const dispatch = useDispatch()
-
 
     //Style
     const paddingBadgeCmd = {padding: '8px'} //style des badge 'ForCommande'
@@ -52,7 +53,7 @@ const ContainerArticles = ({showModal}) => {
             dispatch(changeClubArticleStandby(id, parametres.club))
         })
         .catch(err => {
-            console.log(err);
+            console.log('firebase.changeClubArticle', err);
         })
     }
 
@@ -112,29 +113,24 @@ const ContainerArticles = ({showModal}) => {
         }
     }
 
-   
+
+    //affichage au format prix
     const currencyLocalPrice = prix => {
         return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
     }
 
 
-
     //Désactivation du bouton
-    const displayBtnClub = (user_name) => {
-        if ((user.prenom + ' ' + user.nom) !== user_name) {
-            return {
-                display: 'none'
-            }
-        }
-        return {}
-    }
-    
+    const displayBtnClub = (article) => ((user.prenom + ' ' + user.nom) !== article.user_name) 
+    && article.destination
+    ? {display: 'none'}
+    : {}
 
+    
     //Affiche les articles
     const displayArticles = articlesStandby.length ? 
         articlesStandby.map(article => {
             return (
-
                 <Accordion.Item eventKey={`${article.id}`} key={article.id}>
                     
                     <Accordion.Header>
@@ -169,7 +165,7 @@ const ContainerArticles = ({showModal}) => {
                                     <Button 
                                         variant="primary" 
                                         onClick={() => handleClubCommande(article.id)}
-                                        style={displayBtnClub(article.user_name)}>
+                                        style={displayBtnClub(article)}>
                                             Mettre au nom du club
                                     </Button>
                                 </div>
@@ -182,15 +178,13 @@ const ContainerArticles = ({showModal}) => {
                         </Card.Body>
                     </Accordion.Body>
 
-                </Accordion.Item>
-
-            )
+                </Accordion.Item>)
         })
     :
     <p>Aucun article en attente</p>
 
 
-    //Affiche les articles
+    //Affiche les bons
     const displayBons = bonsStandby.length ? 
     bonsStandby.map(bon => {
         return (

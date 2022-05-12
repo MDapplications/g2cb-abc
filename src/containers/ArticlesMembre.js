@@ -5,10 +5,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { removeArticleMembre } from '../Redux/actions/ArticlesMembre'
 import { removeBonMembre } from '../Redux/actions/BonsMembre'
 
+
 const ArticlesMembre = () => {
     
+    //Redux
     const articlesMembre = useSelector(state => state.articlesMembre)
     const bonsMembre = useSelector(state => state.bonsMembre)
+
+    //Hooks
     const dispatch = useDispatch()
 
     // mettre au format prix
@@ -27,8 +31,7 @@ const ArticlesMembre = () => {
         }
     }
 
-
-
+    //Si aucune data à afficher
     const displayNoData = () => (articlesMembre.length === 0 && bonsMembre.length === 0) ? <p>Aucun article</p> : <></>
 
 
@@ -79,7 +82,7 @@ const ArticlesMembre = () => {
     <></>
 
 
-    //Affiche les articles
+    //Affiche les bons
     const displayBons = bonsMembre.length ? 
     bonsMembre.map(bon => {
         return (

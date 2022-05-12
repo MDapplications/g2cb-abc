@@ -1,23 +1,24 @@
 /* eslint-disable no-loop-func */
 import React, { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import ContainerDepot from '../../containers/Depot'
-import { addCommande } from '../../Redux/actions/Commandes'
-import { addArticleDepot, removeArticleDepot } from '../../Redux/actions/Depot'
 import { FirebaseContext } from '../Firebase'
-import { addArticlePrepaFactDepot, addBonPrepaFactDepot, addPrepaFactDepot } from '../../Redux/actions/PrepaFactDepot'
 import { Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { addBonDepot, removeBonDepot } from '../../Redux/actions/BonsDepot'
-import ModalBonsDepot from '../ModalBonsDepot'
 import ReactTooltip from 'react-tooltip'
 import Modal2Confirmation from '../Modal2Confirmation'
+import ContainerDepot from '../../containers/Depot'
+import ModalBonsDepot from '../ModalBonsDepot'
+import { useNavigate } from 'react-router-dom'
+import { addCommande } from '../../Redux/actions/Commandes'
+import { addArticleDepot, removeArticleDepot } from '../../Redux/actions/Depot'
 import { addCompteurFacture } from '../../Redux/actions/Compteurs'
 import { removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
-import { useNavigate } from 'react-router-dom'
+import { addBonDepot, removeBonDepot } from '../../Redux/actions/BonsDepot'
+import {addArticlePrepaFactDepot, 
+        addBonPrepaFactDepot, 
+        addPrepaFactDepot } from '../../Redux/actions/PrepaFactDepot'
+import 'react-toastify/dist/ReactToastify.css'
 toast.configure()
-
 
 
 const Depots = () => {

@@ -1,18 +1,18 @@
 import React from 'react'
-import { createRoot } from 'react-dom/client'
 import App from './components/App'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { Provider } from 'react-redux'
+import { createRoot } from 'react-dom/client'
+import { Provider as Redux } from 'react-redux'
 import Firebase, { FirebaseContext } from './components/Firebase'
 import store from './Redux/store'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-const container = document.getElementById('root')
+const container = document.getElementById('app')
 const root = createRoot(container)
 
 root.render(
   <FirebaseContext.Provider value={new Firebase()}>
-    <Provider store={store}>
-      <App/>
-    </Provider>
+    <Redux store={store}>
+      <App tab='home'/>
+    </Redux>
   </FirebaseContext.Provider>    
 )

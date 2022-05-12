@@ -15,6 +15,7 @@ import reducerPrepaFactures from './reducers/PrepaFactures'
 import reducerPrepaFactDepot from './reducers/PrepaFactDepot'
 import reducerBonsDepot from './reducers/BonsDepot'
 import reducerRetours from './reducers/Retours'
+import reducerUtilisateurs from './reducers/Utilisateurs'
 
 
 const rootReducer = combineReducers({
@@ -32,7 +33,7 @@ const rootReducer = combineReducers({
     parametres: reducerParams,
     prepaFactDepot: reducerPrepaFactDepot,
     retours: reducerRetours,
-    //ajouter les reducer ici
+    listUsers: reducerUtilisateurs
 })
 
 

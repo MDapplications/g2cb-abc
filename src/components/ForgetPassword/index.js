@@ -2,18 +2,24 @@ import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FirebaseContext } from '../Firebase'
 
+
 const ForgetPassword = () => {
+
+    //Style
     const cardLogin = {
         width: '25%',
     }
 
+    //States
     const [email, setEmail] = useState('')
     const [success, setSuccess] = useState(null)
     const [error, setError] = useState(null)
 
+    //Hooks
     const navigate = useNavigate()
     const firebase = useContext(FirebaseContext)
 
+    //Demande de réinitialisation de mot de passe
     const handleSubmit = event => {
         event.preventDefault()
         firebase.passwordReset(email)
@@ -32,7 +38,7 @@ const ForgetPassword = () => {
         })
     }
 
-
+    //Désactivation du bouton si pas de mail renseigné
     const btnDisabled = email === ''
 
     // gestion erreurs
@@ -49,7 +55,7 @@ const ForgetPassword = () => {
     </div>
 
 
-
+    //render
     return (
         <div className='d-flex justify-content-center' style={{marginTop: '50px'}}>
             <div className='card text-dark bg-light' style={cardLogin}>

@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import {Button, Table} from 'react-bootstrap'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import "./style.css"
-import Logo from '../../images/logo NB.png'
 import { useSelector } from "react-redux"
-
-
+import { Button, Table } from 'react-bootstrap'
+import { Logo } from '../Logo'
+import "./style.css"
 
 
 const CommandePrint = () => {
@@ -34,8 +31,7 @@ const CommandePrint = () => {
     //Selector (redux)
     const user = useSelector(state => state.user)
     const listCommandes = useSelector(state => state.commandes)
-    const parametres = useSelector(state => state.parametres)
-    
+   
 
     //State
     const [currentCommande, setCurrentCommande] = useState(dataCommande)
@@ -135,7 +131,7 @@ const CommandePrint = () => {
             </div>
 
             <div className="page-container hidden-on-narrow">
-                <div className="pdf-page size-a4-paysage">
+                <div className="pdf-page size-a4-paysage paysage">
                 <div className="inner-page">
                     <div className="pdf-header d-flex justify-content-between">
                         <span>
@@ -158,11 +154,11 @@ const CommandePrint = () => {
                             <div className="for">
                                 <h6>Adresse de livraison</h6>
                                 <p>
-                                {currentCommande.user_name}
+                                {user.prenom + ' ' + user.nom}
                                 <br/>
-                                {parametres.adresse}
+                                {user.adresse}
                                 <br/>
-                                {parametres.code_postal + ' - ' + parametres.ville}
+                                {user.code_postal + ' - ' + user.ville}
                                 </p>
                             </div>
                         </div>

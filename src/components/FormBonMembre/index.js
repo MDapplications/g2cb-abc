@@ -39,18 +39,20 @@ const AddBon = () => {
         }
     }
 
-
+    //Action du bouton d'ajout de bon
     const handleSubmit = e => {
         e.preventDefault()
         dispatch(addBonMembre(bonAchat))
         setBonAchat(bonData)
     }
 
+    //Désactivation du bouton : "Ajouter un bon"
     const disableBtn = () => articlesMembre.length > 0 ? false : true
 
-
+    //Destructuring
     const {reference, montant} = bonAchat
 
+    //render
     return (
         <div className='d-flex justify-content-center'>
             <form className='w-25' onSubmit={handleSubmit}>
