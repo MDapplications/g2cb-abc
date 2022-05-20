@@ -5,11 +5,14 @@ import { Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import Modal2Confirmation from '../Modal2Confirmation'
 import ContainerArticles from '../../containers/ArticlesStandby'
-import { deleteArticleStandby, loadArticleStandby, removeArticleStandby } from '../../Redux/actions/ArticlesStandby'
+import { changeClubArticleStandby, deleteArticleStandby, loadArticleStandby, removeArticleStandby } from '../../Redux/actions/ArticlesStandby'
 import { deleteBonStandby, loadBonStandby, removeBonStandby } from '../../Redux/actions/BonsStandby'
 import { initCompteurs, addCompteurCommande, addCompteurFacture } from '../../Redux/actions/Compteurs'
 import { addArticlePrepaFacture, addBonPrepaFacture, addPrepaFacture, removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
 import 'react-toastify/dist/ReactToastify.css'
+import { removeAllDepot } from '../../Redux/actions/Depot'
+import { removeAllFacture } from '../../Redux/actions/Factures'
+import { removeAllCommande } from '../../Redux/actions/Commandes'
 
 toast.configure()
 
@@ -26,6 +29,7 @@ const StandbyArticle = () => {
     const bonsStandby = useSelector(state => state.bonsStandby)
     const compteurs = useSelector(state => state.compteurs)
     const listFactures = useSelector(state => state.prepaFactures)
+    const parametres = useSelector(state => state.parametres)
 
 
 
@@ -43,6 +47,7 @@ const StandbyArticle = () => {
     const [currentYear] = useState(new Date().getFullYear())
     const [openModalDelete, setOpenModalDelete] = useState(false)
     const [openModalCommande, setOpenModalCommande] = useState(false)
+    const [openModalClub, setOpenModalClub] = useState(false)
     const [data, setData] = useState({
         type: '',
         id: 0
@@ -154,7 +159,12 @@ const StandbyArticle = () => {
             localStorage.setItem('ABCstorageDate', Date.now())
             dispatch(initCompteurs())
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
+
+    //Initialisation de la liste des article en attente
+    useEffect(() => {
         //Getting des articles en attentes
         if(!(localStorage.getItem('ArticlesStandby'))) {
             console.log("Création de la liste d'article en attente")
@@ -172,7 +182,12 @@ const StandbyArticle = () => {
             })
 
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
+
+    //Initialisation de la liste des bons en attentes
+    useEffect(() => {
         //Getting des bons en attente
         if(!(localStorage.getItem('BonsStandby'))) {
             console.log("Création de la liste des bons en attente")
@@ -192,6 +207,7 @@ const StandbyArticle = () => {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+    
     
 
     //Reset de la date stocker si elle est passé de 24h
@@ -261,7 +277,7 @@ const StandbyArticle = () => {
             id: id,
             date: dateString,
             num_commande: numCommande,
-            nb_bon: nbBonCommande,
+            nb_bons: nbBonCommande,
             nb_articles: nbArticleCommande,
             montant: montantCommande,
             user_id: userSession.uid,
@@ -281,7 +297,7 @@ const StandbyArticle = () => {
                 id: idFacture,
                 date: dateString,
                 num_facture: idFacture,
-                nb_bon: listFactures[idUser].nbBons,
+                nb_bons: listFactures[idUser].nbBons,
                 nb_articles: listFactures[idUser].nbArticles,
                 montant: listFactures[idUser].montant,
                 user_id: listFactures[idUser].user_id,
@@ -359,23 +375,17 @@ const StandbyArticle = () => {
                     })
                 }
             })
-        })
-        .catch((error) => {
-            console.log('firebase.addCommande', error)
-        })
-        .finally(() => {
             
+            dispatch(removeAllCommande())
+            dispatch(removeAllFacture()) 
+            dispatch(removeAllDepot())
+
             localStorage.removeItem('Commandes')
             localStorage.removeItem('Factures')
             localStorage.removeItem('Depot')
 
-            dispatch(addCompteurCommande())
-
-            //remise à zero de la preparation facturation
-            dispatch(removeAllPrepaFacture())
-
-            setOpenModalCommande(false)
             
+
             //notification indiquant que la commande à bien était envoyé
             toast.success('Commande ' + id + ' créée avec succès !', {
                 position: "bottom-center",
@@ -386,6 +396,18 @@ const StandbyArticle = () => {
                 draggable: true,
                 progress: undefined,
             })
+
+        })
+        .catch((error) => {
+            console.log('firebase.addCommande', error)
+        })
+        .finally(() => {
+            dispatch(addCompteurCommande())
+
+            //remise à zero de la preparation facturation
+            dispatch(removeAllPrepaFacture())
+
+            setOpenModalCommande(false)
         })
         
     }
@@ -395,6 +417,7 @@ const StandbyArticle = () => {
     const hideModal = () => {
         setOpenModalCommande(false)
         setOpenModalDelete(false)
+        setOpenModalClub(false)
     }
 
     //Ouverture du modal et recupération des infos
@@ -404,17 +427,20 @@ const StandbyArticle = () => {
         setOpenModalDelete(true)
     }
     const showModalCommande = () => setOpenModalCommande(true)
-
+    const showModalClub = id => {
+        setData({type: 'article', id})
+        setOpenModalClub(true) 
+    }
 
     //Validation du modal de double confirmation
     //Suppression de l'article dans firestore et Redux
     const handleDelete = () => {
-
         switch (data.type) {
             case 'article':
                 firebase.deleteArticle(data.id)
                 .then(() => {
                     dispatch(deleteArticleStandby(data.id))
+                    dispatch(removeAllPrepaFacture())
                 })
                 .catch(err => {
                     console.log(err);
@@ -424,6 +450,7 @@ const StandbyArticle = () => {
                 firebase.deleteBon(data.id)
                 .then(() => {
                     dispatch(deleteBonStandby(data.id))
+                    dispatch(removeAllPrepaFacture())
                 })
                 .catch(err => {
                     console.log(err);
@@ -432,15 +459,33 @@ const StandbyArticle = () => {
             default:
                 break;
         }
+        //remise à zero de la preparation facturation
+        
         setOpenModalDelete(false)
     }
+
+    //Mettre au nom du club
+    const handleClubCommande = () => { 
+        firebase.changeClubArticle(data.id, parametres.club)
+        .then(() => {
+            dispatch(changeClubArticleStandby(data.id, parametres.club))
+            dispatch(removeAllPrepaFacture())
+        })
+        .catch(err => {
+            console.log('firebase.changeClubArticle', err);
+        })
+        setOpenModalClub(false)
+    }
+
+
+
  
     //activation du modal de double confirmation
     const displayModalDelete = openModalDelete && 
         <Modal2Confirmation 
             hideModal={hideModal} 
             handleConfirm={handleDelete}
-            textValue={`Êtes-vous sûr de vouloir le supprimer ? (${data.type})`}/>
+            textValue={`Êtes-vous sûr de vouloir suppimer ${data.type === 'article' ? "l'article" : "le bon"} ?`}/>
 
     //activation du modal de double confirmation
     const displayModalCommande = openModalCommande && 
@@ -448,6 +493,17 @@ const StandbyArticle = () => {
             hideModal={hideModal} 
             handleConfirm={handleClick}
             textValue='Êtes-vous sûr de vouloir créer cette commande ?'/>
+
+    //activation du modal de double confirmation
+    const displayModalClub = openModalClub && 
+    <Modal2Confirmation 
+        hideModal={hideModal} 
+        handleConfirm={handleClubCommande}
+        textValue={<>
+            <p className='mb-0 text-center'>Êtes-vous sûr de vouloir mettre cet article au nom du club ?</p>
+            <p className='text-center'><strong>Cette action est irréversible !</strong></p>
+        </>}
+        textType={true} />
 
 
     //render
@@ -476,11 +532,12 @@ const StandbyArticle = () => {
             </main>
             
             <div className='text-center justify-content-center m-4'>
-                <ContainerArticles showModal={showModalDelete}/>           
+                <ContainerArticles showModalDelete={showModalDelete} showModalClub={showModalClub}/>           
             </div>
 
             {displayModalDelete}
             {displayModalCommande}
+            {displayModalClub}
             
         </>
     )

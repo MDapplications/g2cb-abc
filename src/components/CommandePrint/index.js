@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
-import { useSelector } from "react-redux"
+import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Button, Table } from 'react-bootstrap'
 import { Logo } from '../Logo'
-import "./style.css"
+import './style.css'
 
 
 const CommandePrint = () => {
@@ -130,17 +130,17 @@ const CommandePrint = () => {
                 <div className='box-col' />
             </div>
 
-            <div className="page-container hidden-on-narrow">
-                <div className="pdf-page size-a4-paysage paysage">
-                <div className="inner-page">
-                    <div className="pdf-header d-flex justify-content-between">
+            <div className='page-container hidden-on-narrow'>
+                <div className='pdf-page size-a4-paysage paysage'>
+                <div className='inner-page'>
+                    <div className='pdf-header d-flex justify-content-between'>
                         <span>
-                            <h4 className="ms-2">{currentCommande.date + ' - Bon de commande du club A.B.C.'} </h4>
+                            <h4 className='ms-2'>{currentCommande.date + ' - Bon de commande du club A.B.C.'} </h4>
                         </span>
-                        <span className="invoice-number pt-0"><span style={{textDecoration: 'underline'}}>Numero de commande</span> : {currentCommande.numCommande}</span>
+                        <span className='invoice-number pt-0'><span style={{textDecoration: 'underline'}}>Numero de commande</span> : {currentCommande.numCommande}</span>
                     </div>
 
-                    <div className="pdf-footer d-flex justify-content-between">
+                    <div className='pdf-footer d-flex justify-content-between'>
                         <div>
                             Commande : {currentCommande.numCommande}
                         </div>
@@ -149,9 +149,9 @@ const CommandePrint = () => {
                         </div>
                     </div>
 
-                    <div className="d-flex justify-content-between">
-                        <div className="addresses ms-2">
-                            <div className="for">
+                    <div className='d-flex justify-content-between'>
+                        <div className='addresses ms-2'>
+                            <div className='for'>
                                 <h6>Adresse de livraison</h6>
                                 <p>
                                 {user.prenom + ' ' + user.nom}
@@ -162,13 +162,13 @@ const CommandePrint = () => {
                                 </p>
                             </div>
                         </div>
-                        <div className="from">
-                            <img src={Logo} alt="Logo" width="75" height="75"/>
+                        <div className='from'>
+                            <img src={Logo} alt='Logo' width='75' height='75'/>
                         </div>
                     </div>
 
-                    <div className="pdf-body">
-                        <div id="grid">
+                    <div className='pdf-body'>
+                        <div id='grid'>
                             <Table striped bordered hover>
                                 <thead>
                                     <tr>
@@ -188,7 +188,9 @@ const CommandePrint = () => {
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td colSpan='2'></td>
+                                        <td colSpan='2' className='addresses ps-2 p-0'>
+                                            D = Dépôt / F = Facturé
+                                        </td>
                                         <td 
                                             className='text-end'
                                             style={tableStyle}>

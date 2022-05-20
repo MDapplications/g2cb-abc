@@ -67,8 +67,8 @@ const ArticlesMembre = () => {
                             <hr/>
    
                             <div className='d-flex justify-content-end'>
-                                <Button variant="danger">
-                                    <HiOutlineTrash onClick={() => dispatch(removeArticleMembre(article.id))}/>
+                                <Button variant="danger" onClick={() => dispatch(removeArticleMembre(article.id))}>
+                                    <HiOutlineTrash/>
                                 </Button>
                             </div>
                         </Card.Body>

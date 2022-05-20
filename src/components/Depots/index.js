@@ -10,7 +10,7 @@ import ContainerDepot from '../../containers/Depot'
 import ModalBonsDepot from '../ModalBonsDepot'
 import { useNavigate } from 'react-router-dom'
 import { addCommande } from '../../Redux/actions/Commandes'
-import { addArticleDepot, removeArticleDepot } from '../../Redux/actions/Depot'
+import { addArticleDepot, removeAllDepot, removeArticleDepot } from '../../Redux/actions/Depot'
 import { addCompteurFacture } from '../../Redux/actions/Compteurs'
 import { removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
 import { addBonDepot, removeBonDepot } from '../../Redux/actions/BonsDepot'
@@ -18,6 +18,8 @@ import {addArticlePrepaFactDepot,
         addBonPrepaFactDepot, 
         addPrepaFactDepot } from '../../Redux/actions/PrepaFactDepot'
 import 'react-toastify/dist/ReactToastify.css'
+import { removeAllFacture } from '../../Redux/actions/Factures'
+import { removeAllRetour } from '../../Redux/actions/Retours'
 toast.configure()
 
 
@@ -97,7 +99,7 @@ const Depots = () => {
     }, [articlesDepot])
 
     
-    //Initialisation des compteurs
+    //Récupérations des articles en dépôts
     useEffect(() => {
             
         //Getting des Dépots
@@ -254,8 +256,13 @@ const Depots = () => {
             })
             .finally(() => {
 
+                dispatch(removeAllFacture())
+                dispatch(removeAllDepot())
+                dispatch(removeAllRetour())
+
                 localStorage.removeItem('Factures')
                 localStorage.removeItem('Depot')
+                localStorage.removeItem('Retours')
     
                 //remise à zero de la preparation facturation
                 dispatch(removeAllPrepaFacture())

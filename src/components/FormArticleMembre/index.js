@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
+import { Button } from 'react-bootstrap'
+import { useDispatch } from 'react-redux'
 import ReactTooltip from 'react-tooltip'
 import {addArticleMembre} from '../../Redux/actions/ArticlesMembre'
 
@@ -9,8 +10,12 @@ const validPrix = '^(([1-9][0-9]*((,|\\.)([0-9]{1,2}))?)$|0(,|\\.)([1-9][0-9]?|0
 const validQuantite = '^[1-9][0-9]*$'
 
 
-const AddArticle = ({addArticleMembre}) => {
+const AddArticle = () => {
     
+
+    //Hooks
+    const dispatch = useDispatch()
+
     //State : Date courante
     const [currentDate] = useState(new Date().toLocaleDateString())
 
@@ -28,7 +33,6 @@ const AddArticle = ({addArticleMembre}) => {
     //Style
     const styleComment = {
         marginTop: '-.4rem',
-        marginBottom: '1rem',
         fontSize: '.7em', 
         color: '#6c757d'
     }
@@ -55,28 +59,42 @@ const AddArticle = ({addArticleMembre}) => {
                     setArticle({...article, destination: false})
                 }
                 break; 
-
-            case 'number':
-                setArticle({...article, [event.target.id]: Number(event.target.value)})
-                break;
             default:
                 setArticle({...article, [event.target.id]: event.target.value})
                 break;
         }
     }
     
+    //Destructuring
+    const {reference, prix, quantite, variante, description, destination} = article
+    
 
     //Ajout d'un article par le membre
     const handleSubmit = e => {
         e.preventDefault()
-        addArticleMembre(article)
+
+        const prixMembre = Number(article.prix)
+        const quantiteMembre = Number(article.quantite)
+
+        dispatch(addArticleMembre({
+            reference,
+            prix: prixMembre,
+            quantite: quantiteMembre,
+            variante,
+            description,
+            destination,
+            date: currentDate
+        }))
         setArticle(ArticleData)
         setAchat(true)
         setDepot(false)
     }
 
-    //Destructuring
-    const {reference, prix, quantite, variante, description} = article
+    
+    const displayBtn = reference !== '' && prix !== '' && variante !== '' && description !== ''
+    ? <Button className='mb-2' variant="secondary" onClick={handleSubmit}>Ajouter un article</Button>
+    : <Button className='mb-2' variant="outline-secondary" disabled>Ajouter un article</Button>
+
 
     //render
     return (
@@ -107,29 +125,30 @@ const AddArticle = ({addArticleMembre}) => {
                     data-tip='Exemple : 30S2001-4030'
                 />
                 <input 
-                    type='number' 
-                    id='prix'
-                    className='form-control mb-3' 
-                    placeholder='Prix'
+                    type='text' 
+                    id='variante'
+                    className='form-control mb-2 flex-fill' 
+                    placeholder='Variantes'
                     required
-                    pattern={validPrix}
-                    min='0.10'
-                    step='0.01'
-                    value={prix}
+                    value={variante}
                     onChange={handleChange}
+                    data-for='tootltipInput' 
+                    data-tip='Taille du vêtement, pointure des chaussures, couleur...'
                 />
+                <p className='text-start ps-3 mb-1' style={styleComment}>
+                    Mettre un espace si aucune variante.
+                </p>
                 <div className='d-flex justify-content-start'>
                     <label className='ps-1 pb-1 text-secondary'>Quantité</label>
                 </div>
                 <div className='d-flex justify-content-between'>
                     <input 
-                        type='number'
+                        type='text'
                         id='quantite' 
                         style={{height: '38px'}}
                         className='form-control mb-4 w-25 flex-fill me-2' 
                         placeholder='Quantité'
                         required
-                        min='1'
                         pattern={validQuantite}
                         value={quantite}
                         onChange={handleChange}
@@ -137,18 +156,17 @@ const AddArticle = ({addArticleMembre}) => {
                     <div>
                         <input 
                             type='text' 
-                            id='variante'
-                            className='form-control mb-2 flex-fill' 
-                            placeholder='Variantes'
+                            id='prix'
+                            className='form-control mb-3' 
+                            placeholder='Prix'
                             required
-                            value={variante}
+                            pattern={validPrix}
+                            value={prix}   
                             onChange={handleChange}
-                            data-for='tootltipInput' 
-                            data-tip='Taille du vêtement, pointure des chaussures, couleur...'
+                            data-for='tootltipInputPrix' 
+                            data-tip='Ne pas mettre : €'
                         />
-                        <p className='text-start ps-3' style={styleComment}>
-                            Mettre un espace si aucune variante.
-                        </p>
+                        <ReactTooltip id="tootltipInputPrix" place="right" effect="solid"/>
                     </div>
                 </div>       
                 <div className='d-flex align-items-start flex-row mb-4'>
@@ -179,19 +197,13 @@ const AddArticle = ({addArticleMembre}) => {
                 </div>
                 <ReactTooltip id="tootltipInput" place="left" effect="solid"/>
                 
-                <button className='btn btn-outline-secondary mb-2'>Ajouter un article</button>
-            
+                {displayBtn}
+
             </form>
         </div>
     )
 }
 
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addArticleMembre: param => dispatch(addArticleMembre(param))
-    }
-}
-
-export default connect(null, mapDispatchToProps)(AddArticle)
+export default AddArticle
 

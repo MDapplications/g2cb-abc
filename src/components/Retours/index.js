@@ -11,11 +11,11 @@ const Retours = () => {
     const firebase = useContext(FirebaseContext)
     const dispatch = useDispatch()
 
-
     //States
     const [currentYear] = useState(new Date().getFullYear())
 
-    //Au chargement du composant
+
+    //Récupération des bon de retours
     useEffect(() => {
         
         //Getting des retours

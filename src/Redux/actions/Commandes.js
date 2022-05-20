@@ -46,7 +46,7 @@ export const removeCommande = id => {
 }
 
 //Action: Suppression d'une commande
-export const removeAllCommande = id => {
+export const removeAllCommande = () => {
     return {
         type: REMOVE_ALL_COMMANDE
     }

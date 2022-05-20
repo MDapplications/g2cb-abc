@@ -15,7 +15,7 @@ const Factures = () => {
     const [currentYear] = useState(new Date().getFullYear())
 
 
-    //Initialisation des compteurs
+    //Récupération des factures
     useEffect(() => {
         //Getting des factures
         if(!localStorage.getItem('Factures')) {

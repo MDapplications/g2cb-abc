@@ -114,7 +114,11 @@ const ContainerUsers = () => {
                         {user.role===3 && <Badge bg="secondary">système</Badge>}
                     </span>
                 </div>
+                
                 <div className='d-flex justify-content-between align-items-center'>
+                    <span style={{paddingRight: '50px'}}>
+                        {user.email}
+                    </span>
                     <span className='me-4'>
                         <Form.Check 
                             type='switch'

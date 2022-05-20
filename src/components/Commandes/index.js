@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FirebaseContext } from '../Firebase'
 import { useDispatch } from 'react-redux'
-import { addCommande } from '../../Redux/actions/Commandes'
+import { addCommande, removeCommande } from '../../Redux/actions/Commandes'
 import ContainerCommandes from '../../containers/Commandes'
+import Modal2Confirmation from '../Modal2Confirmation'
 
 const Commandes = () => {
 
@@ -12,9 +13,11 @@ const Commandes = () => {
 
     //State
     const [currentYear] = useState(new Date().getFullYear())
+    const [openModalDelete, setOpenModalDelete] = useState(false)
+    const [data, setData] = useState('')
 
 
-    //Initialisation des compteurs
+    //Récupération des commandes
     useEffect(() => {
         
         //Getting des commandes
@@ -34,6 +37,36 @@ const Commandes = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentYear])
 
+
+    //Suppression de la commande
+    const handleDelete = () => {
+        firebase.deleteCommande(data)
+        .then(() => {
+            dispatch(removeCommande(data))
+        })
+        .catch(err => {
+            console.log('firebase.deleteCommande', err)
+        })
+    }
+
+    //Fermeture du modal
+    const hideModal = () => setOpenModalDelete(false)
+
+    //Ouverture du modal et recupération des infos
+    const showModalDelete = id => {
+        setData(id)
+        setOpenModalDelete(true)
+    }
+
+    //activation du modal de double confirmation
+    const displayModalDelete = openModalDelete && 
+        <Modal2Confirmation 
+            hideModal={hideModal} 
+            handleConfirm={handleDelete}
+            textValue='Êtes-vous sûr de vouloir suppimer cette commande ?'/>
+
+
+
     //render
     return (
         <>
@@ -47,8 +80,10 @@ const Commandes = () => {
             </main>
 
             <div className='text-center justify-content-center m-4'>
-                <ContainerCommandes/>               
+                <ContainerCommandes showModal={showModalDelete}/>               
             </div>    
+
+            {displayModalDelete}
         </>
     )
 }

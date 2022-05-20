@@ -1,16 +1,14 @@
 import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Accordion, Badge, Button, Card } from "react-bootstrap"
-import { HiOutlineTrash } from 'react-icons/hi'
-import { commandableArticleStandby, changeClubArticleStandby } from '../Redux/actions/ArticlesStandby'
+import { HiOutlineTrash, HiOutlineCheck } from 'react-icons/hi'
+import { commandableArticleStandby } from '../Redux/actions/ArticlesStandby'
 import { FirebaseContext } from '../components/Firebase'
-import { HiOutlineCheck } from 'react-icons/hi'
 import { commandableBonStandby } from '../Redux/actions/BonsStandby'
 import { removeAllPrepaFacture } from '../Redux/actions/PrepaFactures'
 
 
-
-const ContainerArticles = ({showModal}) => {
+const ContainerArticles = ({showModalDelete, showModalClub}) => {
 
     //Hooks
     const firebase = useContext(FirebaseContext)
@@ -19,8 +17,8 @@ const ContainerArticles = ({showModal}) => {
     //Redux
     const articlesStandby = useSelector(state => state.articlesStandby)
     const bonsStandby = useSelector(state => state.bonsStandby)
-    const user = useSelector(state => state.user)
     const parametres = useSelector(state => state.parametres)
+
 
     //Style
     const paddingBadgeCmd = {padding: '8px'} //style des badge 'ForCommande'
@@ -43,18 +41,6 @@ const ContainerArticles = ({showModal}) => {
         } else {
             return <Badge bg='ligth' className='me-2' style={paddingBadgeCmd}><HiOutlineCheck style={{color: '#ffffff00'}}/></Badge>
         }       
-    }
-
-
-    //Mettre au nom du club
-    const handleClubCommande = (id) => { 
-        firebase.changeClubArticle(id, parametres.club)
-        .then(() => {
-            dispatch(changeClubArticleStandby(id, parametres.club))
-        })
-        .catch(err => {
-            console.log('firebase.changeClubArticle', err);
-        })
     }
 
 
@@ -120,11 +106,13 @@ const ContainerArticles = ({showModal}) => {
     }
 
 
-    //Désactivation du bouton
-    const displayBtnClub = (article) => ((user.prenom + ' ' + user.nom) !== article.user_name) 
-    && article.destination
-    ? {display: 'none'}
-    : {}
+    //Affichage du bouton 'Mettre au nom du club'
+    const displayBtnClub = article => article.user_name !== parametres.club &&
+    <Button 
+        variant="primary" 
+        onClick={() => showModalClub(article.id)}>
+            Mettre au nom du club
+    </Button>
 
     
     //Affiche les articles
@@ -162,15 +150,10 @@ const ContainerArticles = ({showModal}) => {
                                         onClick={() => handleToggleCommande('article', article.id, article.forCommande)}>
                                             {article.forCommande ? 'Ne pas commander' : 'Commander'}
                                     </Button>
-                                    <Button 
-                                        variant="primary" 
-                                        onClick={() => handleClubCommande(article.id)}
-                                        style={displayBtnClub(article)}>
-                                            Mettre au nom du club
-                                    </Button>
+                                    {displayBtnClub(article)}
                                 </div>
-                                <div className=''>
-                                    <Button variant="danger" onClick={() => showModal('article', article.id)}>
+                                <div>
+                                    <Button variant="danger" onClick={() => showModalDelete('article', article.id)}>
                                         <HiOutlineTrash/>
                                     </Button>
                                 </div>
@@ -216,7 +199,7 @@ const ContainerArticles = ({showModal}) => {
                                 </Button>
                             </div>
                             <div className=''>
-                                <Button variant="danger" onClick={() => showModal('bon', bon.id)}>
+                                <Button variant="danger" onClick={() => showModalDelete('bon', bon.id)}>
                                     <HiOutlineTrash/>
                                 </Button>
                             </div>
@@ -229,7 +212,7 @@ const ContainerArticles = ({showModal}) => {
         )
     })
     :
-    <></>
+    null
 
 
     //render

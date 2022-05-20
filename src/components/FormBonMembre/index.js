@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import {addBonMembre} from '../../Redux/actions/BonsMembre'
 
@@ -16,6 +17,12 @@ const AddBon = () => {
         reference: '',
         montant: 0,
         date: currentDate
+    }
+
+    //Style
+    const styleNote = {
+        fontSize: '.8em', 
+        color: '#6c757d'
     }
 
     const [bonAchat, setBonAchat] = useState(bonData)
@@ -46,11 +53,16 @@ const AddBon = () => {
         setBonAchat(bonData)
     }
 
-    //Désactivation du bouton : "Ajouter un bon"
-    const disableBtn = () => articlesMembre.length > 0 ? false : true
-
     //Destructuring
     const {reference, montant} = bonAchat
+
+    const displayNote = articlesMembre.length === 0 && <p style={styleNote}>Il faut minimum 1 article pour ajouter un bon d'achat.</p>
+
+    const displayBtn = reference !== '' && montant !== '' && articlesMembre.length > 0 
+    ? <Button className='mb-2' variant="secondary" onClick={handleSubmit}>Ajouter un bon</Button>
+    : <Button className='mb-2' variant="outline-secondary" disabled>Ajouter un bon</Button>
+
+    
 
     //render
     return (
@@ -67,21 +79,20 @@ const AddBon = () => {
                     onChange={handleChange}
                 />
                 <input 
-                    type='number' 
+                    type='text' 
                     id='montant'
                     className='form-control mb-3'
                     placeholder="Montant"
                     required
-                    min='1'
-                    step='1'
                     pattern={validPrix}
                     value={montant}
                     onChange={handleChange}
                 />
 
-                <button className='btn btn-outline-secondary mb-2' disabled={disableBtn()}>Ajouter un bon</button>
-            </form>
-            
+                {displayNote}
+                {displayBtn}
+
+            </form>        
         </div>
     )
 }

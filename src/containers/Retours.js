@@ -50,12 +50,12 @@ const ContainerRetour = () => {
                 docs.forEach((doc) => {   
                     dispatch(addArticleRetour(doc.data())) 
                 })
+                navigate('/retourPrint/' + retourId)
             })
             .catch(err => {
                 console.log('firebase.getArticleRetour', err)
             }) 
-        }
-        else {
+        } else {
             navigate('/retourPrint/' + retourId)
         }  
     }

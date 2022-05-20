@@ -7,6 +7,7 @@ import reducerBonMembre from './reducers/BonsMembre'
 import reducerArticleStandby from './reducers/ArticlesStandby'
 import reducerBonStandby from './reducers/BonsStandby'
 import reducerCompteurs from './reducers/Compteurs'
+import reducerArticlesCommande from './reducers/ArticlesCommande'
 import reducerCommandes from './reducers/Commandes'
 import reducerDepot from './reducers/Depot'
 import reducerFactures from './reducers/Factures'
@@ -16,6 +17,7 @@ import reducerPrepaFactDepot from './reducers/PrepaFactDepot'
 import reducerBonsDepot from './reducers/BonsDepot'
 import reducerRetours from './reducers/Retours'
 import reducerUtilisateurs from './reducers/Utilisateurs'
+import reducerArticlesFacture from './reducers/ArticlesFacture'
 
 
 const rootReducer = combineReducers({
@@ -26,7 +28,9 @@ const rootReducer = combineReducers({
     bonsStandby: reducerBonStandby,
     prepaFactures: reducerPrepaFactures,
     compteurs: reducerCompteurs,
+    commandeModif: reducerArticlesCommande,
     commandes: reducerCommandes,
+    factureModif: reducerArticlesFacture,
     factures: reducerFactures,
     depot: reducerDepot,
     bonsDepot: reducerBonsDepot,

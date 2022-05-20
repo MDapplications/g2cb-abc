@@ -23,6 +23,14 @@ const Signup = ({hideModal}) => {
         checkCGU: false
     }
 
+    //Style
+    const styleComment = {
+        marginTop: '-.9rem',
+        marginBottom: '1rem',
+        fontSize: '.7em', 
+        color: '#6c757d'
+    }
+
     // etat (component) du formulaire
     const [loginData, setLoginData] = useState(data)
     const [error, setError] = useState('')
@@ -158,6 +166,18 @@ const Signup = ({hideModal}) => {
                                     value={password}
                                     onChange={handleChange}/>
                             </div>
+                            <p className='text-start' style={styleComment}>
+                                Le mot de passe doit posséder :
+                            </p>
+                            <p className='text-start ps-3' style={styleComment}>
+                                - Au moins 8 caractères.
+                            </p>
+                            <p className='text-start ps-3' style={styleComment}>
+                                - Au moins 1 majuscule.
+                            </p>
+                            <p className='text-start ps-3' style={styleComment}>
+                                - Au moins 1 caractère spécial.
+                            </p>
                             <div className='mb-3'>
                                 <label htmlFor='confirmPassword' className='form-label'>Confirmation du mot de passe</label>
                                 <input 

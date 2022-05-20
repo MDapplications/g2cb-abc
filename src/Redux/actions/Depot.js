@@ -53,7 +53,7 @@ export const retournableArticleDepot = (id, value) => {
 }
 
 //Action: Suppression de tout le contenu du dépot
-export const removeAllDepot = id => {
+export const removeAllDepot = () => {
     return {
         type: REMOVE_ALL_DEPOT
     }

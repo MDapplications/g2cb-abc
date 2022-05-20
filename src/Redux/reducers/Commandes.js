@@ -20,7 +20,7 @@ const helperAdddata = action => {
         date: action.payload.date,
         montant: action.payload.montant,
         nbArticles: action.payload.nb_articles,
-        nbBons: action.payload.nb_bon,
+        nbBons: action.payload.nb_bons,
         numCommande: action.payload.num_commande,
         user_id: action.payload.user_id,
         user_name: action.payload.user_name,

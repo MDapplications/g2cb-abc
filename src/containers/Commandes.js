@@ -1,13 +1,17 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Accordion, Button, Card } from 'react-bootstrap'
+import { HiOutlineTrash } from 'react-icons/hi'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { FirebaseContext } from '../components/Firebase'
-import { addArticleCommande, addBonCommande } from '../Redux/actions/Commandes'
+import FormArticleCommande from '../components/FormArticleCommande'
+import { addArticleCommandeModif, addBonCommandeModif, loadCommandeModif, removeCommandeModif } from '../Redux/actions/ArticlesCommande'
+import { removeFactureModif } from '../Redux/actions/ArticlesFacture'
+import { addArticleCommande, addBonCommande, addCommande} from '../Redux/actions/Commandes'
 
 
 
-const ContainerCommandes = () => {
+const ContainerCommandes = ({showModal}) => {
     
     //Hooks
     const firebase = useContext(FirebaseContext)
@@ -19,7 +23,30 @@ const ContainerCommandes = () => {
 
     //State
     const [currentYear] = useState(new Date().getFullYear())
-
+    const [openModalArticles, setOpenModalArticles] = useState(false)
+    const [refreshCommande, setRefreshCommande] = useState(false)
+ 
+    
+    //Récupération des commandes
+    useEffect(() => {
+        if (refreshCommande) {
+            if(!localStorage.getItem('Commandes')) {
+                console.log("Création de la liste des commandes")
+                firebase.getCommandes(currentYear)
+                .then((docs) => {
+                    docs.forEach((doc) => {   
+                        dispatch(addCommande(doc.data()))
+                    })
+                })
+                .catch((error) => {
+                    console.log('firebase.getCommandes', error);
+                })
+            }
+            setRefreshCommande(false)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentYear, refreshCommande])
+    
 
     // afficher / Imprimer la commande
     const handleShow = commande => {
@@ -38,16 +65,65 @@ const ContainerCommandes = () => {
                         })
                         navigate('/commandePrint/' + commandeId)
                     })
-                }
+                    .catch(err => {
+                        console.log('firebase.getBonCommande', err);
+                    })
+                } else {
+                    navigate('/commandePrint/' + commandeId)
+                } 
             })
             .catch(err => {
-                console.log(err)
+                console.log('firebase.getArticleCommande', err)
             }) 
-        }
-        else {
+        } else {
             navigate('/commandePrint/' + commandeId)
         }  
     }
+
+
+    const handleChangeCommande = commande => {
+        const commandeId = commande.id
+        dispatch(loadCommandeModif(commande))
+
+        if (commande.articles.length === 0) {
+            firebase.getArticleCommande(commandeId)
+            .then((docs) => {
+                docs.forEach((doc) => {   
+                    dispatch(addArticleCommandeModif(doc.data()))
+                })
+                if (commande.bons.length === 0 && commande.nbBons > 0) {
+                    firebase.getBonCommande(commandeId)
+                    .then((docs) => {
+                        docs.forEach((doc) => { 
+                            dispatch(addBonCommandeModif(doc.data()))      
+                        })
+                        setOpenModalArticles(true)
+                    })
+                    .catch(err => {
+                        console.log('firebase.getBonCommande', err);
+                    })
+                } else {
+                    setOpenModalArticles(true)
+                }
+            })
+            .catch(err => {
+                console.log('firebase.getArticleCommande', err)
+            }) 
+        } else {
+            setOpenModalArticles(true)
+        }
+    }
+
+    const hideModal = () => {
+        setOpenModalArticles(false)
+        dispatch(removeCommandeModif())
+        dispatch(removeFactureModif())
+        setRefreshCommande(true)
+    }
+
+    const showModalArticles = openModalArticles && 
+        <FormArticleCommande
+            hideModal={hideModal}/>
 
 
     //Affichage au format prix
@@ -83,8 +159,16 @@ const ContainerCommandes = () => {
                         <hr/>
                         <div className='d-flex justify-content-between'>
                             <div className='d-flex justify-content-start'>
-                                <Button variant="success" onClick={() => handleShow(commande)}>
+                                <Button className='me-2' variant="success" onClick={() => handleShow(commande)}>
                                     Afficher / Imprimer
+                                </Button>
+                                <Button variant="primary" onClick={() => handleChangeCommande(commande)}>
+                                    Modifier la commande
+                                </Button>
+                            </div>
+                            <div style={{display: 'none'}}>
+                                <Button variant="danger" onClick={() => showModal(commande.id)}>
+                                    <HiOutlineTrash/>
                                 </Button>
                             </div>
                         </div>
@@ -102,6 +186,7 @@ const ContainerCommandes = () => {
     return (
         <Accordion className='mb-2'>
             {displayCommandes}
+            {showModalArticles}
         </Accordion>
     )
 }

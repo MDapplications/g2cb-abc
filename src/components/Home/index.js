@@ -12,6 +12,7 @@ import ArticlesMembre from '../../containers/ArticlesMembre'
 import Modal2Confirmation from '../Modal2Confirmation'
 import NavbarHome from '../NavbarHome'
 import 'react-toastify/dist/ReactToastify.css'
+import { removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
 
 toast.configure()
 
@@ -212,9 +213,10 @@ const Home = () => {
         }
 
         if (finishArticleOK && finishBonOK) {
+            dispatch(removeAllPrepaFacture())
             localStorage.removeItem('ArticlesStandby')
             localStorage.removeItem('BonsStandby')
-
+            
             //Envoie du mail seulment s'il y en a un de paramétré
             if (parametres.sendmail !== '') {
                 const templateParams = {sendmail: parametres.sendmail}

@@ -9,7 +9,7 @@ import {
     setPersistence,
     browserSessionPersistence,
     deleteUser} from 'firebase/auth'
-import { getFirestore, doc, setDoc, getDoc, where, getDocs, collection, query, updateDoc, deleteDoc } from "firebase/firestore"
+import { getFirestore, doc, setDoc, getDoc, where, getDocs, collection, query, updateDoc, deleteDoc, orderBy } from "firebase/firestore"
 
 const {
         REACT_APP_FIREBASE_API_KEY,
@@ -19,6 +19,7 @@ const {
         REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
         REACT_APP_FIREBASE_APP_ID,
         REACT_APP_FIREBASE_MEASUREMENT_ID,
+        REACT_APP_USER_ID_CLUB
     } = process.env
 
 
@@ -131,6 +132,9 @@ class Firebase {
     // récupération d'un article dans firestore
     getArticle = (uid) => getDoc(doc(this.db, "articles", uid))
 
+    // récupération d'un article dans firestore
+    updateArticle = (uid, article) => updateDoc(doc(this.db, "articles", uid), article)
+
     // récupérer tous les articles dans firestore
     getAllArticle = () => getDocs(collection(this.db, "articles"))
 
@@ -163,7 +167,10 @@ class Firebase {
     disableForRetourArticle = (uid) => updateDoc(doc(this.db, "articles", uid), {forRetour: false})
 
     //L'article sera faite par le club
-    changeClubArticle = (uid, value) => updateDoc(doc(this.db, "articles", uid), {user_name: value})
+    changeClubArticle = (uid, value) => updateDoc(doc(this.db, "articles", uid), {
+        user_id: REACT_APP_USER_ID_CLUB,
+        user_name: value
+    })
 
     //récupération de la liste d'article d'une commande
     getArticleCommande = (num_commande) => getDocs(query(collection(this.db, "articles"), where("commande", "==", num_commande)))
@@ -251,44 +258,60 @@ class Firebase {
     //------------------------------------------------------------------------------------------
     //-------------------------------        COMMANDES        ----------------------------------
     //------------------------------------------------------------------------------------------
+    
     //enregistrer une commande dans firestore
-    addCommande = (id, commande) => setDoc(doc(this.db, "commandes", id), commande)
+    addCommande = (uid, commande) => setDoc(doc(this.db, "commandes", uid), commande)
 
     //récupération d'un bon dans firestore
     getCommande = (idCommande) => getDoc(doc(this.db, "commandes", idCommande))
 
     //récupération de la liste des commandes de l'année en cours
-    getCommandes = (year) => getDocs(query(collection(this.db, "commandes"), where("year", "==", year)))
+    getCommandes = (year) => getDocs(query(collection(this.db, "commandes"), where("year", "==", year), orderBy("id", "desc")))
+
+    //mise à jour d'une commande dans firestore
+    updateCommande = (uid, commande) => updateDoc(doc(this.db, "commandes", uid), commande)
+
+    //Supprimer une commande
+    deleteCommande = (uid) => deleteDoc(doc(this.db, "commandes", uid))
 
 
     //------------------------------------------------------------------------------------------
     //-------------------------------        FACTURES        ----------------------------------
     //------------------------------------------------------------------------------------------
+    
     //enregistrer une fature dans firestore
-    addFacture = (id, facture) => setDoc(doc(this.db, "factures", id), facture)
+    addFacture = (uid, facture) => setDoc(doc(this.db, "factures", uid), facture)
+
+    //récupération d'un bon dans firestore
+    getFacture = (idFacture) => getDoc(doc(this.db, "factures", idFacture))
 
     //récupération de la liste des factures de l'année en cours
-    getFactures = (year) => getDocs(query(collection(this.db, "factures"), where("year", "==", year)))
+    getFactures = (year) => getDocs(query(collection(this.db, "factures"), where("year", "==", year), orderBy("id", "desc")))
 
+    //mise à jour d'une fature dans firestore
+    updateFacture = (uid, facture) => updateDoc(doc(this.db, "factures", uid), facture)
 
-    //Le bon sera mise dans une commande
+    //Facture réglée
     enableReglerFacture = (uid) => updateDoc(doc(this.db, "factures", uid), {regler: true})
-    //Le bon ne sera pas mise dans une commande
+    //Facture non réglée
     disableReglerFacture = (uid) => updateDoc(doc(this.db, "factures", uid), {regler: false})
+
+    //Supprimer unne facture
+    deleteFacture = (uid) => deleteDoc(doc(this.db, "factures", uid))
 
 
     //------------------------------------------------------------------------------------------
     //---------------------------------        RETOURS        ----------------------------------
     //------------------------------------------------------------------------------------------
-    //enregistrer une commande dans firestore
+    //enregistrer un bon de retour dans firestore
     addRetour = (id, retour) => setDoc(doc(this.db, "retours", id), retour)
 
-    //récupération de la liste des commandes de l'année en cours
-    getRetours = (year) => getDocs(query(collection(this.db, "retours"), where("year", "==", year)))
+    //récupération de la liste des bon de retours de l'année en cours
+    getRetours = (year) => getDocs(query(collection(this.db, "retours"), where("year", "==", year), orderBy("id", "desc")))
 
-    //Le bon sera mise dans une commande
+    //Les articles du bon de retour sont retournés
     enableRetournerRetour = (uid) => updateDoc(doc(this.db, "retours", uid), {retourner: true})
-    //Le bon ne sera pas mise dans une commande
+    //Les articles du bon de retour ne sont pas retournés
     disableRetournerRetour = (uid) => updateDoc(doc(this.db, "retours", uid), {retourner: false})
 
 }

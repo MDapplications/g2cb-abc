@@ -4,7 +4,7 @@ import {LOAD_ARTICLE_STANDBY,
         DELETE_ARTICLE_STANDBY, 
         REMOVE_ARTICLE_STANDBY} from '../Constantes'
 
-
+const {REACT_APP_USER_ID_CLUB} = process.env
 
 //initial state
 const initialState = {
@@ -33,6 +33,7 @@ const commandableDataById = (state, action) => {
 const changeClubDataById = (state, action) => {
     state.forEach(article => {
         if (article.id === action.id) {
+            article.user_id = REACT_APP_USER_ID_CLUB
             article.user_name = action.value
         }
     })
