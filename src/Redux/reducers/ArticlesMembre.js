@@ -13,8 +13,8 @@ const helperAdddata = action => {
     return {
         id: uuiv4(),
         reference: action.payload.reference,
-        prix: action.payload.prix,
-        quantite: action.payload.quantite,
+        prix: Number(action.payload.prix),
+        quantite: Number(action.payload.quantite),
         variante: action.payload.variante,
         description: action.payload.description,
         destination: action.payload.destination,

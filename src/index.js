@@ -12,7 +12,7 @@ const root = createRoot(container)
 root.render(
   <FirebaseContext.Provider value={new Firebase()}>
     <Redux store={store}>
-      <App tab='home'/>
+      <App/>
     </Redux>
   </FirebaseContext.Provider>    
 )

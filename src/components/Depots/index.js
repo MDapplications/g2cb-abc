@@ -8,15 +8,14 @@ import ReactTooltip from 'react-tooltip'
 import Modal2Confirmation from '../Modal2Confirmation'
 import ContainerDepot from '../../containers/Depot'
 import ModalBonsDepot from '../ModalBonsDepot'
-import { useNavigate } from 'react-router-dom'
 import { addCommande } from '../../Redux/actions/Commandes'
-import { addArticleDepot, removeAllDepot, removeArticleDepot } from '../../Redux/actions/Depot'
-import { addCompteurFacture } from '../../Redux/actions/Compteurs'
-import { removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
+import { addArticleDepot, removeArticleDepot } from '../../Redux/actions/Depot'
+import { addCompteurFacture, addCompteurRetour } from '../../Redux/actions/Compteurs'
 import { addBonDepot, removeBonDepot } from '../../Redux/actions/BonsDepot'
 import {addArticlePrepaFactDepot, 
         addBonPrepaFactDepot, 
-        addPrepaFactDepot } from '../../Redux/actions/PrepaFactDepot'
+        addPrepaFactDepot, 
+        removeAllPrepaFactDepot} from '../../Redux/actions/PrepaFactDepot'
 import 'react-toastify/dist/ReactToastify.css'
 import { removeAllFacture } from '../../Redux/actions/Factures'
 import { removeAllRetour } from '../../Redux/actions/Retours'
@@ -28,7 +27,6 @@ const Depots = () => {
     //Hooks
     const firebase = useContext(FirebaseContext)
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
     //Redux
     const user = useSelector(state => state.user)
@@ -144,10 +142,9 @@ const Depots = () => {
                 console.log('firebase.getCommandes', error);
             })
         }
-
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [currentYear])
 
 
 
@@ -215,7 +212,7 @@ const Depots = () => {
                 id: idFacture,
                 date: dateString,
                 num_facture: idFacture,
-                nb_bon: listFactures[idUser].nbBons,
+                nb_bons: listFactures[idUser].nbBons,
                 nb_articles: listFactures[idUser].nbArticles,
                 montant: listFactures[idUser].montant,
                 user_id: listFactures[idUser].user_id,
@@ -231,6 +228,8 @@ const Depots = () => {
                     firebase.addArticleFacture(idArticle, idFacture)
                     .then(() => {
                         dispatch(removeArticleDepot(idArticle))
+                        //remise à zero de la preparation facturation
+                        dispatch(removeAllPrepaFactDepot())
                     })
                     .catch(err => {
                         console.log('firebase.addArticleFacture', err)
@@ -249,31 +248,21 @@ const Depots = () => {
                 })
                 //Incrementation du numero de facture
                 dispatch(addCompteurFacture())
+                
             })
             .catch(err => {
                 console.log('firebase.addFacture', err)
                 noErr = false
             })
-            .finally(() => {
-
-                dispatch(removeAllFacture())
-                dispatch(removeAllDepot())
-                dispatch(removeAllRetour())
-
-                localStorage.removeItem('Factures')
-                localStorage.removeItem('Depot')
-                localStorage.removeItem('Retours')
-    
-                //remise à zero de la preparation facturation
-                dispatch(removeAllPrepaFacture())
-    
-                setOpenModalFacturation(false)
-                
-                
-                navigate('/admin/depots')
-            })
+            
 
             if (noErr) {
+                dispatch(removeAllFacture())
+                dispatch(removeAllRetour())
+                
+                localStorage.removeItem('Factures')
+                localStorage.removeItem('Retours')   
+
                 //notification indiquant que la commande à bien était envoyé
                 toast.success('Les factures ont été créée avec succès !', {
                     position: "bottom-center",
@@ -285,6 +274,8 @@ const Depots = () => {
                     progress: undefined,
                 })
             }
+
+            setOpenModalFacturation(false)
 
         }        
     }
@@ -331,16 +322,13 @@ const Depots = () => {
             console.log('firebase.addRetour', err)
             noErr = false
         })
-        .finally(() => {
-            localStorage.removeItem('Depot')
-            setOpenModalRetour(false)
-            dispatch(addCompteurFacture())
-                        
-            navigate('/admin/depots')
-        })
-
 
         if (noErr) {
+            dispatch(removeAllRetour())
+
+            localStorage.removeItem('Retours')   
+            dispatch(addCompteurRetour())
+            
             //notification indiquant que la commande à bien était envoyé
             toast.success('Le bon de retour ' + id + ' a été créée avec succès !', {
                 position: "bottom-center",
@@ -352,7 +340,8 @@ const Depots = () => {
                 progress: undefined,
             })
         }
-        
+        setOpenModalRetour(false)  
+
     }
 
     

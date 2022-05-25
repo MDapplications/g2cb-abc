@@ -111,7 +111,7 @@ const reducerPrepaFactDepot = (state=initialState, action) => {
             return state
 
         case REMOVE_ALL_PREPA_FACT_DEPOT:
-            return initialState
+            return {}
             
         default: return state
     }

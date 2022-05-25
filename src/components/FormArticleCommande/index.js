@@ -140,7 +140,7 @@ const FormArticleCommande = ({hideModal}) => {
         
         //Vérification 
         let modifFacture = false
-        if (articleModif.facture === facture.id) {
+        if (articleModif.facture === facture.id && facture.id !== '') {
             dispatch(removeArticleFactureModif(articleModif))
             modifFacture = true
         }
@@ -194,6 +194,7 @@ const FormArticleCommande = ({hideModal}) => {
     }
 
 
+
     //Modifier un article de la commande (prix ou variante)
     const handleModifArticle = () => {
 
@@ -202,15 +203,16 @@ const FormArticleCommande = ({hideModal}) => {
             variante: variante,
             prix: Number(prix)
         }
-
+        
         dispatch(updateArticleCommandeModif(dataArticle))
         
         //Vérification si l'article fait partie d'une facture
         let modifFacture = false
-        if (articleModif.facture === facture.id) {
+        if (articleModif.facture === facture.id && facture.id !== '') {
             dispatch(updateArticleFactureModif(dataArticle))
             modifFacture = true
         }
+        console.log(modifFacture)
         
         firebase.updateArticle(idArticleModif, dataArticle)
         .then(() => {

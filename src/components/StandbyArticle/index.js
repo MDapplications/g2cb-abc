@@ -93,28 +93,30 @@ const StandbyArticle = () => {
             if (article.forCommande) {
                 return {
                     montant: prevValue.montant + (article.prix * article.quantite), 
-                    nb: prevValue.nb + article.quantite
+                    nb: prevValue.nb + article.quantite,
+                    element: prevValue.element + 1
                 }
             }else{
                 return prevValue
             }
-        }, {montant:0.0 , nb: 0}) 
+        }, {montant:0.0 , nb: 0, element: 0}) 
         //Calcul des bon en commande
         const calculBon = bonsStandby.reduce((prevValue, bon) => {
             if (bon.forCommande) {
                 return {
                     montant: prevValue.montant + (bon.montant * 1), 
-                    nb: prevValue.nb + 1
+                    nb: prevValue.nb + 1,
+                    element: prevValue.element + 1
                 }
             }else{
                 return prevValue
             }  
-        }, {montant:0.0 , nb: 0})
+        }, {montant:0.0 , nb: 0, element: 0})
 
         setMontantCommande(calculArticle.montant - calculBon.montant)
         setNbArticleCommande(calculArticle.nb)
         setNbBonCommande(calculBon.nb)
-        setNbElementCommande(calculArticle.nb + calculBon.nb)
+        setNbElementCommande(calculArticle.element + calculBon.element)
 
     }, [articlesStandby, bonsStandby])
 

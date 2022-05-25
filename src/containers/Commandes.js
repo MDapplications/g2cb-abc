@@ -110,6 +110,11 @@ const ContainerCommandes = ({showModal}) => {
                 console.log('firebase.getArticleCommande', err)
             }) 
         } else {
+            commande.articles.forEach(article => dispatch(addArticleCommandeModif(article)))
+            
+            if (commande.bons.length === 0 && commande.nbBons > 0) {
+                commande.bons.forEach(bon => dispatch(addBonCommandeModif(bon)))      
+            } 
             setOpenModalArticles(true)
         }
     }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet, useNavigate } from 'react-router-dom'
 import NavBarDashboard from '../NavbarDashboard'
@@ -6,8 +6,15 @@ import NavBarDashboard from '../NavbarDashboard'
 
 const Dashboard = () => {
 
+    //Hooks
     const user = useSelector(state => state.user)
+
+    //Redux
     const navigate = useNavigate()
+
+    //States
+    const [currentYear] = useState(new Date().getFullYear())
+
 
     //redirection vers home
     useEffect(() => {
@@ -21,7 +28,7 @@ const Dashboard = () => {
     return (
         <>
             <NavBarDashboard/>
-            <Outlet/>
+            <Outlet context={currentYear}/>
         </>
     )
 }

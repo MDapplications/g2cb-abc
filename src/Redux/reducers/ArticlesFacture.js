@@ -66,7 +66,7 @@ const helperRemoveArticle = (state, article) => {
 const helperUpdateArticle = (state, article) => {
     const prevArticle = state.articles.find(data => data.id === article.id)
     state.articles = state.articles.filter(data => data.id !== article.id)
-    
+
     //changement du prix
     if (prevArticle.prix !== article.prix) {
         const resultMontant = state.montant + (article.prix * article.quantite) - (prevArticle.prix * prevArticle.quantite) 

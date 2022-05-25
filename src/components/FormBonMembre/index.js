@@ -15,7 +15,7 @@ const AddBon = () => {
 
     const bonData = {
         reference: '',
-        montant: 0,
+        montant: '',
         date: currentDate
     }
 
@@ -36,14 +36,6 @@ const AddBon = () => {
         // recuperation de l'id pour savoir sur quel input on change l'etat
         // permet de cibler directement l'input en train de changer
         setBonAchat({...bonAchat, [event.target.id]: event.target.value})
-        switch (event.target.type) {
-            case 'number':
-                setBonAchat({...bonAchat, [event.target.id]: Number(event.target.value)})
-                break;
-            default:
-                setBonAchat({...bonAchat, [event.target.id]: event.target.value})
-                break;
-        }
     }
 
     //Action du bouton d'ajout de bon

@@ -32,13 +32,14 @@ const ContainerFactures = () => {
                         })
                         navigate('/facturePrint/' + factureId)
                     })
+                } else {
+                    navigate('/facturePrint/' + factureId)
                 }
             })
             .catch(err => {
                 console.log(err)
             }) 
-        }
-        else {
+        } else {
             navigate('/facturePrint/' + factureId)
         }  
     }

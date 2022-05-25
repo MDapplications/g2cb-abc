@@ -13,7 +13,7 @@ const helperAdddata = action => {
     return {
         id: uuiv4(),
         reference: action.payload.reference,
-        montant: action.payload.montant,
+        montant: Number(action.payload.montant),
         date: action.payload.date,
     }
 }
