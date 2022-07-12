@@ -13,6 +13,7 @@ import Modal2Confirmation from '../Modal2Confirmation'
 import NavbarHome from '../NavbarHome'
 import 'react-toastify/dist/ReactToastify.css'
 import { removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
+import Loader from '../Loader'
 
 toast.configure()
 
@@ -285,35 +286,41 @@ const Home = () => {
 
 
     //render
-    return (
+    return userSession == null ? (
+        <Loader 
+            loadingMsg={"Authentification ..."}
+            styling={{textAlign: 'center', color: '#00b9ff'}}
+        />
+    ) : (
         <>
-        <NavbarHome/>
-        <main role='main'>
-            <div className='p-2 bg-light border rounded-3'>
-                <div className='container text-center justify-content-center'>
-                    <h1 className='display-4'>Votre commande</h1>
-                    
-                    <nav className='nav justify-content-center'>
-                        <Link className='nav-link link-secondary' to='article'>Ajouter vos articles</Link>
-                        <Link className='nav-link link-secondary' to='bon'>Ajouter vos bons d'achat</Link>
-                    </nav>
+            <NavbarHome/>
 
-                    <Outlet/>
+            <main role='main'>
+                <div className='p-2 bg-light border rounded-3'>
+                    <div className='container text-center justify-content-center'>
+                        <h1 className='display-4'>Votre commande</h1>
+                        
+                        <nav className='nav justify-content-center'>
+                            <Link className='nav-link link-secondary' to='article'>Ajouter vos articles</Link>
+                            <Link className='nav-link link-secondary' to='bon'>Ajouter vos bons d'achat</Link>
+                        </nav>
+
+                        <Outlet/>
+                    </div>
+                    <hr/>
+                    <div className='d-flex justify-content-center'>
+                        {btnCommandeFini}
+                    </div>
                 </div>
-                <hr/>
-                <div className='d-flex justify-content-center'>
-                    {btnCommandeFini}
-                </div>
+            </main>
+
+            <div className='text-center justify-content-center m-4'>
+                <ArticlesMembre/>         
             </div>
-        </main>
-
-        <div className='text-center justify-content-center m-4'>
-            <ArticlesMembre/>         
-        </div>
+            
+            {displayModalCommande}
         
-        {displayModalCommande}
-        
-    </>
+        </>
     )
 }
 

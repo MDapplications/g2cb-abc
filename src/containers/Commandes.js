@@ -26,6 +26,8 @@ const ContainerCommandes = ({showModal}) => {
     const [openModalArticles, setOpenModalArticles] = useState(false)
     const [refreshCommande, setRefreshCommande] = useState(false)
  
+
+    console.log(listCommandes)
     
     //Récupération des commandes
     useEffect(() => {

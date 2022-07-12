@@ -7,8 +7,6 @@ import BtnLogout from '../BtnLogout'
 
 const NavbarHome = () => {
 
-    //State
-    const [username, setUsername] = useState("")
 
     //Redux
     const user = useSelector(state => state.user)
@@ -17,6 +15,8 @@ const NavbarHome = () => {
     const navBarColor = {
         backgroundColor: '#bbbbbb'
     }
+
+    const {username} = user
 
 
     // Au chargement du composant
