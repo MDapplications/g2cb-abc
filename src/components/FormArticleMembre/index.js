@@ -6,7 +6,7 @@ import {addArticleMembre} from '../../Redux/actions/ArticlesMembre'
 
 //REGEX
 const validRefence = '^[0-9A-Z\\-]+$'
-const validPrix = '^(([1-9][0-9]*((,|\\.)([0-9]{1,2}))?)$|0(,|\\.)([1-9][0-9]?|0[1-9])$)'
+//const validPrix = '^(([1-9][0-9]*((,|\\.)([0-9]{1,2}))?)$|0(,|\\.)([1-9][0-9]?|0[1-9])$)'
 const validQuantite = '^[1-9][0-9]*$'
 
 
@@ -22,7 +22,7 @@ const AddArticle = () => {
     //Constante
     const ArticleData = {
         reference: '',
-        prix: '',
+        prix: '0.0',
         quantite: 1,
         variante: '',
         description: '',
@@ -39,6 +39,7 @@ const AddArticle = () => {
 
     //States
     const [article, setArticle] = useState(ArticleData)
+    const [prixMembreText, setPrixMembreText] = useState(ArticleData.prix)
     const [achat, setAchat] = useState(true)
     const [depot, setDepot] = useState(false)
 
@@ -63,6 +64,11 @@ const AddArticle = () => {
                 setArticle({...article, [event.target.id]: event.target.value})
                 break;
         }
+    }
+
+    const handleChangePrix = event => {
+        setPrixMembreText(event.target.value)
+        setArticle({...article, prix: Number(event.target.value)})
     }
     
     //Destructuring
@@ -91,7 +97,7 @@ const AddArticle = () => {
     }
 
     
-    const displayBtn = reference !== '' && prix !== '' && variante !== '' && description !== ''
+    const displayBtn = reference !== '' && prix !== '' && variante !== '' && description !== '' && Number(prix) > 0
     ? <Button className='mb-2' variant="secondary" onClick={handleSubmit}>Ajouter un article</Button>
     : <Button className='mb-2' variant="outline-secondary" disabled>Ajouter un article</Button>
 
@@ -155,15 +161,16 @@ const AddArticle = () => {
                     />
                     <div>
                         <input 
-                            type='text' 
+                            type='number' 
                             id='prix'
                             className='form-control mb-3' 
                             placeholder='Prix'
                             required
-                            pattern={validPrix}
-                            value={prix}   
-                            onChange={handleChange}
-                            data-for='tootltipInputPrix' 
+                            //pattern={validPrix}
+                            value={prixMembreText}  
+                            min='0' 
+                            onChange={handleChangePrix}
+                            data-for='tootltipInputPrix'
                             data-tip='Ne pas mettre : €'
                         />
                         <ReactTooltip id="tootltipInputPrix" place="right" effect="solid"/>

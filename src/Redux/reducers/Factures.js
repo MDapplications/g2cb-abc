@@ -28,6 +28,7 @@ const helperAdddata = action => {
         user_id: action.payload.user_id,
         user_name: action.payload.user_name,
         year: action.payload.year,
+        regler: action.payload.regler,
         articles: [],
         bons: [],
     }

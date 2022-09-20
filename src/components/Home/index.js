@@ -220,7 +220,7 @@ const Home = () => {
             
             //Envoie du mail seulment s'il y en a un de paramétré
             if (parametres.sendmail !== '') {
-                const templateParams = {sendmail: parametres.sendmail}
+                const templateParams = {sendmail: parametres.sendmail, user_name: user.prenom + ' ' + user.nom}
 
                 emailjs.send(REACT_APP_EMAILJS_SERVICE_MAIL,'template_artAttente', templateParams, REACT_APP_EMAILJS_PUBLIC_KEY)
                 .then(

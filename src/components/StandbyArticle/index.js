@@ -228,7 +228,7 @@ const StandbyArticle = () => {
 
 
     //Désactivation du bouton "Créer la commande"
-    const disableBtnCommande = () => nbElementCommande > 21  
+    const disableBtnCommande = nbElementCommande > 21 || nbElementCommande === 0 || nbArticleCommande === 0
  
 
 
@@ -527,7 +527,7 @@ const StandbyArticle = () => {
                             </span>
                         </span>
                         <span className='pe-5'>
-                            <Button variant='success' onClick={showModalCommande} disabled={disableBtnCommande()}>Créer la commande</Button>
+                            <Button variant='success' onClick={showModalCommande} disabled={disableBtnCommande}>Créer la commande</Button>
                         </span>                        
                     </div>
                 </div>

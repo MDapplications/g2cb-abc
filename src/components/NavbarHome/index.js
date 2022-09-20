@@ -11,13 +11,13 @@ const NavbarHome = () => {
     //Redux
     const user = useSelector(state => state.user)
 
+    //States
+    const [username, setUsername] = useState(user.prenom + ' ' + user.nom)
+
     //Style
     const navBarColor = {
         backgroundColor: '#bbbbbb'
     }
-
-    const {username} = user
-
 
     // Au chargement du composant
     useEffect(() => {
