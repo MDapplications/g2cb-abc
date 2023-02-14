@@ -7,7 +7,7 @@ import { FirebaseContext } from '../components/Firebase'
 import FormArticleCommande from '../components/FormArticleCommande'
 import { addArticleCommandeModif, addBonCommandeModif, loadCommandeModif, removeCommandeModif } from '../Redux/actions/ArticlesCommande'
 import { removeFactureModif } from '../Redux/actions/ArticlesFacture'
-import { addArticleCommande, addBonCommande, addCommande} from '../Redux/actions/Commandes'
+import { addArticleCommande, addBonCommande, addCommande } from '../Redux/actions/Commandes'
 
 
 
@@ -20,21 +20,31 @@ const ContainerCommandes = ({showModal}) => {
 
     //Redux
     const listCommandes = useSelector(state => state.commandes)
+    const {yearSelected} = useSelector(state => state.parametres)
 
     //State
-    const [currentYear] = useState(new Date().getFullYear())
     const [openModalArticles, setOpenModalArticles] = useState(false)
     const [refreshCommande, setRefreshCommande] = useState(false)
+    const [selectYear, setSelectYear] = useState(yearSelected)
  
 
-    console.log(listCommandes)
+
+    //Actualisation de la liste des commandes sur changement d'année selectionnée
+    useEffect(() => {
+        if (selectYear !== yearSelected) {
+            setRefreshCommande(true)
+            setSelectYear(yearSelected)
+        }
+    }, [yearSelected, selectYear])
+
     
     //Récupération des commandes
     useEffect(() => {
         if (refreshCommande) {
+            console.log('commande refresh ?')
             if(!localStorage.getItem('Commandes')) {
-                console.log("Création de la liste des commandes")
-                firebase.getCommandes(currentYear)
+                console.log("Création de la liste des commandes de : ", selectYear)
+                firebase.getCommandes(selectYear)
                 .then((docs) => {
                     docs.forEach((doc) => {   
                         dispatch(addCommande(doc.data()))
@@ -47,7 +57,7 @@ const ContainerCommandes = ({showModal}) => {
             setRefreshCommande(false)
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentYear, refreshCommande])
+    }, [selectYear, refreshCommande])
     
 
     // afficher / Imprimer la commande
@@ -186,7 +196,7 @@ const ContainerCommandes = ({showModal}) => {
         )
     })
     :
-    <p>Il n'y a eu aucune commande pour {currentYear} jusque maintenant.</p>
+    <p>Il n'y a eu aucune commande pour {selectYear} jusque maintenant.</p>
     
     
     //render

@@ -1,17 +1,19 @@
-import {LOAD_RETOUR,
-        ADD_RETOUR,
-        ADD_ARTICLE_RETOUR,
-        RETOURNER_RETOUR,
-        REMOVE_RETOUR,
-        REMOVE_ALL_RETOUR} from '../Constantes'
+import { createReducer } from "@reduxjs/toolkit"
+import {    addArticleRetour, 
+            addRetour, 
+            loadRetour, 
+            removeAllRetour, 
+            removeRetour, 
+            retournerRetour 
+        } 
+from "../actions/Retours"
 
 
-
-const initialState = []
+let initialState = []
 
 
 //helper add Data
-const helperAdddata = action => {
+const helperAddData = action => {
     return {
         id: action.payload.id,
         date: action.payload.date,
@@ -54,47 +56,41 @@ const helperAddArticle = (state, action) => {
 }
 
 
-
-
 //reducer
-const reducerRetours = (state=initialState, action) => {
+export default createReducer(initialState, (builder) => {
 
-    if(localStorage.getItem('Retours')) {
-        state = JSON.parse(localStorage.getItem('Retours'))
+    const localStorageData = localStorage.getItem('Retours')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_RETOUR:
+    return builder
+        .addCase(loadRetour, (state) => {
             return state
-
-        case ADD_RETOUR:
-            state = [...state, helperAdddata(action)]
+        })
+        .addCase(removeAllRetour, () => {
+            localStorage.setItem('Retours', JSON.stringify([]))
+            return []
+        })
+        .addCase(addRetour, (state, action) => {
+            state = [...state, helperAddData(action)]
             localStorage.setItem('Retours', JSON.stringify(state))
             return state
-
-        case ADD_ARTICLE_RETOUR:
-            state = helperAddArticle(state, action)
-            localStorage.setItem('Retours', JSON.stringify(state))
-            return state
-
-        case RETOURNER_RETOUR:
-            state = retournerDataById(state, action)
-            localStorage.setItem('Retours', JSON.stringify(state))
-            return state
-
-        case REMOVE_RETOUR:
+        })
+        .addCase(removeRetour, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('Retours', JSON.stringify(state))
             return state
-
-        case REMOVE_ALL_RETOUR:
-            state = []
+        })
+        .addCase(addArticleRetour, (state, action) => {
+            state = helperAddArticle(state, action)
             localStorage.setItem('Retours', JSON.stringify(state))
             return state
-            
-        default: return state
-    }
-}
+        })
+        .addCase(retournerRetour, (state, action) => {
+            state = retournerDataById(state, action)
+            localStorage.setItem('Retours', JSON.stringify(state))
+            return state
+        })
 
-
-export default reducerRetours
+})

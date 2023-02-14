@@ -1,13 +1,10 @@
-import {    LOAD_USERS, 
-            ADD_USERS, 
-            UPDATE_ROLE_USERS,
-            DELETE_USERS,
-            REMOVE_ALL_USERS} from '../Constantes'
+import { createReducer } from "@reduxjs/toolkit"
+import { addUsers, deleteUsers, loadUsers, removeAllUsers, updateRoleUsers } from "../actions/Utilisateurs"
 
 
 
 
-const initialState = []
+let initialState = []
 
 
 const helperAdddata = (action) => {
@@ -41,39 +38,33 @@ const deleteDataById = (state, id) => {
 
 
 //reducer
-const reducerUtilisateurs = (state=initialState, action) => {
-
-    if(localStorage.getItem('listUsers')) {
-        state = JSON.parse(localStorage.getItem('listUsers'))
+export default createReducer(initialState, (builder) => {
+    const localStorageData = localStorage.getItem('listUsers')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_USERS:
+    return builder 
+        .addCase(loadUsers, (state) => {
             return state
-
-        case ADD_USERS:
+        })
+        .addCase(removeAllUsers, () => {
+            localStorage.setItem('listUsers', JSON.stringify([]))
+            return []
+        })
+        .addCase(addUsers, (state, action) => {
             state = [...state, helperAdddata(action)]
             localStorage.setItem('listUsers', JSON.stringify(state))
             return state
-
-        case UPDATE_ROLE_USERS:
+        })
+        .addCase(updateRoleUsers, (state, action) => {
             state = updateRoleById(state, action)
             localStorage.setItem('listUsers', JSON.stringify(state))
             return state
-
-        case DELETE_USERS:
+        })
+        .addCase(deleteUsers, (state, action) => {
             state = deleteDataById(state, action.payload)
             localStorage.setItem('listUsers', JSON.stringify(state))
             return state
-
-        case REMOVE_ALL_USERS:
-            state = []
-            localStorage.setItem('listUsers', JSON.stringify(state))
-            return state
-            
-        default: return state
-    }
-}
-
-
-export default reducerUtilisateurs
+        })
+})

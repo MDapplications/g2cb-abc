@@ -1,20 +1,19 @@
-import {LOAD_BON_DEPOT,
-        ADD_BON_DEPOT,
-        FACTURABLE_BON_DEPOT,
-        REMOVE_BON_DEPOT, 
-        REMOVE_ALL_BON_DEPOT} from '../Constantes'
-
+import { createReducer } from "@reduxjs/toolkit"
+import {    addBonDepot, 
+            facturableBonDepot, 
+            loadBonDepot, 
+            removeAllBonDepot, 
+            removeBonDepot 
+        } 
+from "../actions/BonsDepot"
 
 
 //initial state
-const initialState = []
+let initialState = []
 
 
 //helper d'ajout de bon pour dépot 
-const helperAddBon = (state, bon) => {
-    state = [...state, bon]
-    return state
-}
+const helperAddBon = (state, bon) => [...state, bon]
 
 
 //helper de mise à jour de l'article (facturable)
@@ -29,47 +28,39 @@ const facturableDataById = (state, action) => {
 
 
 //helper de suppression de bon pour depot
-const removeDataById = (state, id) => {
-    const bons = state.filter(bon => bon.id !== id)
-    return bons
-}
-
-
+const removeDataById = (state, id) => state.filter(bon => bon.id !== id)
 
 
 //reducer
-const reducerBonsDepot = (state=initialState, action) => {
-
-    if(localStorage.getItem('BonsDepot')) {
-        state = JSON.parse(localStorage.getItem('BonsDepot'))
+export default createReducer(initialState, (builder) => {
+        
+    const localStorageData = localStorage.getItem('BonsDepot')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_BON_DEPOT:
+    return builder
+        .addCase(loadBonDepot, (state) => {
             return state
-
-        case ADD_BON_DEPOT:
+        })
+        .addCase(removeAllBonDepot, () => {
+            localStorage.setItem('BonsDepot', JSON.stringify([]))
+            return []
+        })
+        .addCase(addBonDepot, (state, action) => {
             state = helperAddBon(state, action.payload)
             localStorage.setItem('BonsDepot', JSON.stringify(state))
             return state
-
-        case FACTURABLE_BON_DEPOT:
-            state = facturableDataById(state, action.payload)
-            localStorage.setItem('BonsDepot', JSON.stringify(state))
-            return state
-
-        case REMOVE_BON_DEPOT:
+        })
+        .addCase(removeBonDepot, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('BonsDepot', JSON.stringify(state))
             return state
-
-        case REMOVE_ALL_BON_DEPOT:
-            state = initialState
+        })
+        .addCase(facturableBonDepot, (state, action) => {
+            state = facturableDataById(state, action.payload)
             localStorage.setItem('BonsDepot', JSON.stringify(state))
             return state
-            
-        default: return state
-    }
-}
+        })
 
-export default reducerBonsDepot
+})

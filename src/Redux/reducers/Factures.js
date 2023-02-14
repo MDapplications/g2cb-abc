@@ -1,23 +1,21 @@
-import {LOAD_FACTURE,
-        ADD_FACTURE,
-        ADD_ARTICLE_FACTURE,
-        ADD_BON_FACTURE,
-        REGLER_FACTURE,
-        REMOVE_FACTURE,
-        REMOVE_ALL_FACTURE} from '../Constantes'
-
+import { createReducer } from "@reduxjs/toolkit"
+import {    addArticleFacture, 
+            addBonFacture, 
+            addFacture, 
+            loadFacture, 
+            reglerFacture, 
+            removeAllFacture, 
+            removeFacture 
+        } 
+from "../actions/Factures"
 
 
 //initial state
-const initialState = {
-    factures: []
-}
-
-
+let initialState = []
 
 
 //helper add Data
-const helperAdddata = action => {
+const helperAddData = action => {
     return {
         id: action.payload.id,
         date: action.payload.date,
@@ -36,10 +34,7 @@ const helperAdddata = action => {
 
 
 //helper remove data
-const removeDataById = (state, id) => {
-    const Factures = state.filter(facture => facture.id !== id)
-    return Factures
-}
+const removeDataById = (state, id) => state.filter(facture => facture.id !== id)
 
 
 const reglerDataById = (state, action) => {
@@ -62,6 +57,7 @@ const helperAddArticle = (state, action) => {
     return state
 }
 
+
 //helper add Bon
 const helperAddBon = (state, action) => {
     state.forEach(facture => {
@@ -73,52 +69,46 @@ const helperAddBon = (state, action) => {
 }
 
 
-
-
-
 //reducer
-const reducerFactures = (state=initialState.factures, action) => {
+export default createReducer(initialState, (builder) => {
 
-    if(localStorage.getItem('Factures')) {
-        state = JSON.parse(localStorage.getItem('Factures'))
+    const localStorageData = localStorage.getItem('BonsDepot')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_FACTURE:
+    return builder
+        .addCase(loadFacture, (state) => {
             return state
-
-        case ADD_FACTURE:
-            state = [...state, helperAdddata(action)]
+        })
+        .addCase(removeAllFacture, () => {
+            localStorage.setItem('Factures', JSON.stringify([]))
+            return []
+        })
+        .addCase(addFacture, (state, action) => {
+            state = [...state, helperAddData(action)]
             localStorage.setItem('Factures', JSON.stringify(state))
             return state
-
-        case ADD_ARTICLE_FACTURE:
+        })
+        .addCase(addArticleFacture, (state, action) => {
             state = helperAddArticle(state, action)
             localStorage.setItem('Factures', JSON.stringify(state))
             return state
-
-        case ADD_BON_FACTURE:
+        })
+        .addCase(addBonFacture, (state, action) => {
             state = helperAddBon(state, action)
             localStorage.setItem('Factures', JSON.stringify(state))
             return state
-
-        case REGLER_FACTURE:
+        })
+        .addCase(reglerFacture, (state, action) => {
             state = reglerDataById(state, action)
             localStorage.setItem('Factures', JSON.stringify(state))
             return state
-
-        case REMOVE_FACTURE:
+        })
+        .addCase(removeFacture, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('Factures', JSON.stringify(state))
             return state
+        })
 
-        case REMOVE_ALL_FACTURE:
-            state = []
-            localStorage.setItem('Factures', JSON.stringify(state))
-            return state
-            
-        default: return state
-    }
-}
-
-export default reducerFactures
+})

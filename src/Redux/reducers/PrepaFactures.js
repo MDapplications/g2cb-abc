@@ -1,13 +1,14 @@
-import {ADD_PREPA_FACTURE,
-        ADD_ARTICLE_PREPA_FACTURE,
-        ADD_BON_PREPA_FACTURE,
-        REMOVE_PREPA_FACTURE,
-        REMOVE_ALL_PREPA_FACTURE} from '../Constantes'
-
+import { createReducer } from '@reduxjs/toolkit'
+import {    addArticlePrepaFacture, 
+            addBonPrepaFacture, 
+            addPrepaFacture, 
+            removeAllPrepaFacture, 
+            removePrepaFacture 
+        } 
+from '../actions/PrepaFactures'
 
 
 const initialState = {}
-
 
 
 const helperAddData = (state, action) => {
@@ -43,6 +44,7 @@ const helperAddArticle = (state, action) => {
     return state
 }
 
+
 //helper add Article
 const helperAddBon = (state, action) => {
     const bon = action.payload
@@ -64,34 +66,25 @@ const helperAddBon = (state, action) => {
 const removeDataById = (state, id) => delete state[id]
 
 
-
-
 //reducer
-const reducerPrepaFactures = (state=initialState, action) => {
+export default createReducer(initialState, (builder) => {
 
-    switch (action.type) {
-        case ADD_PREPA_FACTURE:
+    return builder
+        .addCase(addPrepaFacture, (state, action) => {
             state = helperAddData(state, action)
             state = helperAddArticle(state, action)
             return state
-
-        case ADD_ARTICLE_PREPA_FACTURE:
-            state = helperAddArticle(state, action)
-            return state
-
-        case ADD_BON_PREPA_FACTURE:
-            state = helperAddBon(state, action)
-            return state
-
-        case REMOVE_PREPA_FACTURE:
-            state = removeDataById(state, action.payload)
-            return state
-
-        case REMOVE_ALL_PREPA_FACTURE:
+        })
+        .addCase(addArticlePrepaFacture, (state, action) => {
+            return helperAddArticle(state, action)
+        })
+        .addCase(addBonPrepaFacture, (state, action) => {
+            return helperAddBon(state, action)
+        })
+        .addCase(removePrepaFacture, (state, action) => {
+            return removeDataById(state, action.payload)
+        })
+        .addCase(removeAllPrepaFacture, () => {
             return initialState
-            
-        default: return state
-    }
-}
-
-export default reducerPrepaFactures
+        })
+})

@@ -1,20 +1,13 @@
-import {LOAD_COMMANDE,
-        ADD_COMMANDE,
-        ADD_ARTICLE_COMMANDE,
-        ADD_BON_COMMANDE,
-        REMOVE_COMMANDE,
-        REMOVE_ALL_COMMANDE} from '../Constantes'
-
+import { createReducer } from "@reduxjs/toolkit"
+import { addArticleCommande, addBonCommande, addCommande, loadCommande, removeAllCommande, removeCommande } from "../actions/Commandes"
 
 
 //initial state
-const initialState = {
-    commandes: []
-}
+let initialState = []
 
 
 //helper add Data
-const helperAdddata = action => {
+const helperAddData = action => {
     return {
         id: action.payload.id,
         date: action.payload.date,
@@ -32,10 +25,8 @@ const helperAdddata = action => {
 
 
 //helper remove data
-const removeDataById = (state, id) => {
-    const Commandes = state.filter(commande => commande.id !== id)
-    return Commandes
-}
+const removeDataById = (state, id) => state.filter(commande => commande.id !== id)
+
 
 //helper add Article
 const helperAddArticle = (state, action) => {
@@ -46,6 +37,7 @@ const helperAddArticle = (state, action) => {
     })
     return state
 }
+
 
 //helper add Bon
 const helperAddBon = (state, action) => {
@@ -58,45 +50,41 @@ const helperAddBon = (state, action) => {
 }
 
 
-
 //reducer
-const reducerCommandes = (state=initialState.commandes, action) => {
+export default createReducer(initialState, (builder) => {
 
-    if(localStorage.getItem('Commandes')) {
-        state = JSON.parse(localStorage.getItem('Commandes'))
+    const localStorageData = localStorage.getItem('Commandes')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_COMMANDE:
+    return builder
+        .addCase(loadCommande, (state) => {
             return state
-
-        case ADD_COMMANDE:
-            state = [...state, helperAdddata(action)]
+        })
+        .addCase(removeAllCommande, () => {
+            localStorage.setItem('Commandes', JSON.stringify([]))
+            return []
+        })
+        .addCase(addCommande, (state, action) => {
+            state = [...state, helperAddData(action)]
             localStorage.setItem('Commandes', JSON.stringify(state))
             return state
-
-        case ADD_ARTICLE_COMMANDE:
-            state = helperAddArticle(state, action)
-            localStorage.setItem('Commandes', JSON.stringify(state))
-            return state
-
-        case ADD_BON_COMMANDE:
-            state = helperAddBon(state, action)
-            localStorage.setItem('Commandes', JSON.stringify(state))
-            return state
-
-        case REMOVE_COMMANDE:
+        })
+        .addCase(removeCommande, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('Commandes', JSON.stringify(state))
             return state
-
-        case REMOVE_ALL_COMMANDE:
-            state = []
+        })
+        .addCase(addArticleCommande, (state, action) => {
+            state = helperAddArticle(state, action)
             localStorage.setItem('Commandes', JSON.stringify(state))
             return state
-            
-        default: return state
-    }
-}
+        })
+        .addCase(addBonCommande, (state, action) => {
+            state = helperAddBon(state, action)
+            localStorage.setItem('Commandes', JSON.stringify(state))
+            return state
+        })
 
-export default reducerCommandes
+})

@@ -8,7 +8,6 @@ import ReactTooltip from 'react-tooltip'
 import Modal2Confirmation from '../Modal2Confirmation'
 import ContainerDepot from '../../containers/Depot'
 import ModalBonsDepot from '../ModalBonsDepot'
-import { addCommande } from '../../Redux/actions/Commandes'
 import { addArticleDepot, removeArticleDepot } from '../../Redux/actions/Depot'
 import { addCompteurFacture, addCompteurRetour } from '../../Redux/actions/Compteurs'
 import { addBonDepot, removeBonDepot } from '../../Redux/actions/BonsDepot'
@@ -128,23 +127,9 @@ const Depots = () => {
                 console.log('firebase.getBonDepot', err);
             })
         }
-
-        //Getting des commandes
-        if(!localStorage.getItem('Commandes')) {
-            console.log("Création de la liste des commandes")
-            firebase.getCommandes(currentYear)
-            .then((docs) => {
-                docs.forEach((doc) => {   
-                    dispatch(addCommande(doc.data()))
-                })
-            })
-            .catch((error) => {
-                console.log('firebase.getCommandes', error);
-            })
-        }
-        
+                
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentYear])
+    }, [])
 
 
 

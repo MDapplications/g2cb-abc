@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { FirebaseContext } from '../Firebase'
 import ContainerRetour from '../../containers/Retours'
 import { addRetour } from '../../Redux/actions/Retours'
@@ -11,8 +11,19 @@ const Retours = () => {
     const firebase = useContext(FirebaseContext)
     const dispatch = useDispatch()
 
-    //States
-    const [currentYear] = useState(new Date().getFullYear())
+    //Redux
+    const {yearSelected} = useSelector(state => state.parametres)
+
+    //State
+    const [selectYear, setSelectYear] = useState(yearSelected)
+
+
+    //Actualisation de la liste des retours sur changement d'année selectionnée
+    useEffect(() => {
+        if (selectYear !== yearSelected) {
+            setSelectYear(yearSelected)
+        }
+    }, [yearSelected, selectYear])
 
 
     //Récupération des bon de retours
@@ -20,8 +31,8 @@ const Retours = () => {
         
         //Getting des retours
         if(!localStorage.getItem('Retours')) {
-            console.log("Création de la liste des retours")
-            firebase.getRetours(currentYear)
+            console.log("Création de la liste des retours de :", selectYear)
+            firebase.getRetours(selectYear)
             .then((docs) => {
                 docs.forEach((doc) => {   
                     dispatch(addRetour(doc.data()))
@@ -34,7 +45,7 @@ const Retours = () => {
         }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [selectYear])
     
 
     //render

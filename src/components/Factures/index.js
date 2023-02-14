@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FirebaseContext } from '../Firebase'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addFacture } from '../../Redux/actions/Factures'
 import ContainerFactures from '../../containers/Factures'
 
@@ -11,16 +11,27 @@ const Factures = () => {
     const firebase = useContext(FirebaseContext)
     const dispatch = useDispatch()
 
+    //Redux
+    const {yearSelected} = useSelector(state => state.parametres)
+
     //State
-    const [currentYear] = useState(new Date().getFullYear())
+    const [selectYear, setSelectYear] = useState(yearSelected)
+
+
+    //Actualisation de la liste des commandes sur changement d'année selectionnée
+    useEffect(() => {
+        if (selectYear !== yearSelected) {
+            setSelectYear(yearSelected)
+        }
+    }, [yearSelected, selectYear])
 
 
     //Récupération des factures
     useEffect(() => {
         //Getting des factures
         if(!localStorage.getItem('Factures')) {
-            console.log("Création de la liste des factures")
-            firebase.getFactures(currentYear)
+            console.log("Création de la liste des factures de : ", selectYear)
+            firebase.getFactures(selectYear)
             .then((docs) => {
                 docs.forEach((doc) => {   
                     dispatch(addFacture(doc.data()))
@@ -31,7 +42,7 @@ const Factures = () => {
             })
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentYear])
+    }, [selectYear])
 
 
     //render

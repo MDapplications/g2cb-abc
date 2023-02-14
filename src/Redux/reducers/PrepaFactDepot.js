@@ -1,12 +1,15 @@
-import {ADD_PREPA_FACT_DEPOT,
-        ADD_ARTICLE_PREPA_FACT_DEPOT,
-        ADD_BON_PREPA_FACT_DEPOT,
-        REMOVE_BON_PREPA_FACT_DEPOT,
-        REMOVE_PREPA_FACT_DEPOT,
-        REMOVE_ALL_PREPA_FACT_DEPOT} from '../Constantes'
+import { createReducer } from "@reduxjs/toolkit"
+import {    addArticlePrepaFactDepot, 
+            addBonPrepaFactDepot, 
+            addPrepaFactDepot, 
+            removeAllPrepaFactDepot, 
+            removeBonPrepaFactDepot, 
+            removePrepaFactDepot 
+        } 
+from "../actions/PrepaFactDepot"
 
 
-
+//initial state
 const initialState = {}
 
 
@@ -43,6 +46,7 @@ const helperAddArticle = (state, action) => {
     return state
 }
 
+
 //helper add Bon
 const helperAddBon = (state, action) => {
     const bon = action.payload
@@ -58,6 +62,7 @@ const helperAddBon = (state, action) => {
     }
     return state
 }
+
 
 //helper remove Bon
 const helperRemoveBon = (state, action) => {
@@ -84,37 +89,28 @@ const removeDataById = (state, id) => delete state[id]
 
 
 
-
 //reducer
-const reducerPrepaFactDepot = (state=initialState, action) => {
+export default createReducer(initialState, (builder) => {
 
-    switch (action.type) {
-        case ADD_PREPA_FACT_DEPOT:
+    return builder
+        .addCase(addPrepaFactDepot, (state, action) => {
             state = helperAddData(state, action)
             state = helperAddArticle(state, action)
             return state
-
-        case ADD_ARTICLE_PREPA_FACT_DEPOT:
-            state = helperAddArticle(state, action)
-            return state
-
-        case ADD_BON_PREPA_FACT_DEPOT:
-            state = helperAddBon(state, action)
-            return state
-            
-        case REMOVE_BON_PREPA_FACT_DEPOT:
-            state = helperRemoveBon(state, action)
-            return state
-
-        case REMOVE_PREPA_FACT_DEPOT:
-            state = removeDataById(state, action.payload)
-            return state
-
-        case REMOVE_ALL_PREPA_FACT_DEPOT:
-            return {}
-            
-        default: return state
-    }
-}
-
-export default reducerPrepaFactDepot
+        })
+        .addCase(addArticlePrepaFactDepot, (state, action) => {
+            return helperAddArticle(state, action)
+        })
+        .addCase(addBonPrepaFactDepot, (state, action) => {
+            return helperAddBon(state, action)
+        })
+        .addCase(removeBonPrepaFactDepot, (state, action) => {
+            return helperRemoveBon(state, action)
+        })
+        .addCase(removePrepaFactDepot, (state, action) => {
+            return removeDataById(state, action.payload)
+        })
+        .addCase(removeAllPrepaFactDepot, () => {
+            return initialState
+        })
+})

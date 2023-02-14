@@ -1,24 +1,18 @@
-import {LOAD_DEPOT,
-        ADD_ARTICLE_DEPOT,
-        FACTURABLE_ARTICLE_DEPOT,
-        RETOURNABLE_ARTICLE_DEPOT,
-        REMOVE_ARTICLE_DEPOT,
-        REMOVE_ALL_DEPOT} from '../Constantes'
+import { createReducer } from '@reduxjs/toolkit'
+import {    addArticleDepot, 
+            facturableArticleDepot, 
+            loadDepot, 
+            removeAllDepot, 
+            removeArticleDepot, 
+            retournableArticleDepot 
+        } 
+from '../actions/Depot'
 
 
+let initialState = []
 
 
-
-const initialState = {
-    depot: []
-}
-
-
-
-const helperAddArticle = (state, article) => {
-    state = [...state, article]
-    return state
-}
+const helperAddArticle = (state, article) => [...state, article]
 
 
 //helper de mise à jour de l'article (commandable)
@@ -31,6 +25,7 @@ const facturableDataById = (state, action) => {
     return state
 }
 
+
 //helper de mise à jour de l'article (commandable)
 const retournableDataById = (state, action) => {
     state.forEach(article => {
@@ -42,51 +37,44 @@ const retournableDataById = (state, action) => {
 }
 
 
-const removeDataById = (state, id) => {
-    const depot = state.filter(Article => Article.id !== id)
-    return depot
-}
-
+const removeDataById = (state, id) => state.filter(Article => Article.id !== id)
 
 
 //reducer
-const reducerDepot = (state=initialState.depot, action) => {
-
-    if(localStorage.getItem('Depot')) {
-        state = JSON.parse(localStorage.getItem('Depot'))
+export default createReducer(initialState, (builder) => {
+    
+    const localStorageData = localStorage.getItem('Commandes')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_DEPOT:
+    return builder
+        .addCase(loadDepot, (state) => {
             return state
-
-        case ADD_ARTICLE_DEPOT:
+        })
+        .addCase(removeAllDepot, () => {
+            localStorage.setItem('Depot', JSON.stringify([]))
+            return []
+        })
+        .addCase(addArticleDepot, (state, action) => {
             state = helperAddArticle(state, action.payload)
             localStorage.setItem('Depot', JSON.stringify(state))
             return state
-            
-        case FACTURABLE_ARTICLE_DEPOT:
-            state = facturableDataById(state, action.payload)
-            localStorage.setItem('Depot', JSON.stringify(state))
-            return state
-
-        case RETOURNABLE_ARTICLE_DEPOT:
-            state = retournableDataById(state, action.payload)
-            localStorage.setItem('Depot', JSON.stringify(state))
-            return state
-
-        case REMOVE_ARTICLE_DEPOT:
+        })
+        .addCase(removeArticleDepot, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('Depot', JSON.stringify(state))
             return state
-
-        case REMOVE_ALL_DEPOT:
-            state = []
+        })
+        .addCase(retournableArticleDepot, (state, action) => {
+            state = retournableDataById(state, action.payload)
             localStorage.setItem('Depot', JSON.stringify(state))
             return state
-            
-        default: return state
-    }
-}
+        })
+        .addCase(facturableArticleDepot, (state, action) => {
+            state = facturableDataById(state, action.payload)
+            localStorage.setItem('Depot', JSON.stringify(state))
+            return state
+        })
 
-export default reducerDepot
+})

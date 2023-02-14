@@ -1,31 +1,36 @@
-import { ADD_PARAMETRE, REMOVE_PARAMETRE } from '../Constantes'
+import { createReducer } from "@reduxjs/toolkit"
+import { addParams, changeSelectYear, removeParams } from "../actions/Parametres"
+
 
 //initial state
 const initialState = {
     club: 'ABC',
-    sendmail: ''
+    sendmail: '',
+    minYear: 0,
+    yearSelected: new Date().getFullYear()
 }
-
-
 
 
 //reducer
-const reducerParams = (state=initialState, action) => {
-    switch (action.type) {
-        case ADD_PARAMETRE:
+export default createReducer(initialState, (builder) => {
+    return builder
+        .addCase(removeParams, () => {
+            return initialState
+        })
+        .addCase(addParams, (state, action) => {
             return {
                 ...state,
                 club: action.payload.club,
-                sendmail: action.payload.sendmail
+                sendmail: action.payload.sendmail,
+                minYear: action.payload.minYear,
             }
-
-        case REMOVE_PARAMETRE: 
-            return state = initialState
-            
-        default: return state
-    }
-}
-
-export default reducerParams
+        })
+        .addCase(changeSelectYear, (state, action) => {
+            return {
+                ...state,
+                yearSelected: action.payload,
+            } 
+        })
+})
 
 

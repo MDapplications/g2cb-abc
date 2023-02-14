@@ -1,23 +1,5 @@
-import { ADD_ARTICLE_MEMBRE, REMOVE_ARTICLE_MEMBRE, REMOVE_ALL_ARTICLE_MEMBRE } from '../Constantes'
-
-
-export const addArticleMembre = data => {
-    return {
-        type: ADD_ARTICLE_MEMBRE,
-        payload: data
-    }
-}
-
-export const removeArticleMembre = id => {
-    return {
-        type: REMOVE_ARTICLE_MEMBRE,
-        payload: id
-    }
-}
-
-
-export const removeAllArticleMembre = () => {
-    return {
-        type: REMOVE_ALL_ARTICLE_MEMBRE
-    }
-}
+import { createAction } from '@reduxjs/toolkit'
+//-------------------  Create Action Redux  --------------------
+export const addArticleMembre = createAction('article-membre/add')
+export const removeArticleMembre = createAction('article-membre/remove')
+export const removeAllArticleMembre = createAction('article-membre/remove/all')

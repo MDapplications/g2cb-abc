@@ -1,21 +1,14 @@
-import {LOAD_BON_STANDBY,
-        COMANDABLE_BON_STANDBY,
-        DELETE_BON_STANDBY, 
-        REMOVE_BON_STANDBY} from '../Constantes'
+import { createReducer } from '@reduxjs/toolkit'
+import { commandableBonStandby, loadBonStandby, removeBonStandby } from '../actions/BonsStandby'
 
 
 
 //initial state
-const initialState = {
-    BonsStandby: []
-}
+let initialState = []
 
 
 //helper remove data
-const removeDataById = (state, id) => {
-    const bon = state.filter(bon => bon.id !== id)
-    return bon
-}
+const removeDataById = (state, id) => state.filter(bon => bon.id !== id)
 
 
 //helper de mise à jour de l'BON (commandable)
@@ -29,35 +22,27 @@ const commandableDataById = (state, action) => {
 }
 
 
-
 //reducer
-const reducerBonStandby = (state=initialState.BonsStandby, action) => {
+export default createReducer(initialState, (builder) => {
 
-    if(localStorage.getItem('BonsStandby')) {
-        state = JSON.parse(localStorage.getItem('BonsStandby'))
+    const localStorageData = localStorage.getItem('BonsStandby')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_BON_STANDBY:
+    return builder
+        .addCase(loadBonStandby, (state) => {
             return state
-
-        case COMANDABLE_BON_STANDBY:
+        })
+        .addCase(commandableBonStandby, (state, action) => {
             state = commandableDataById(state, action.payload)
             localStorage.setItem('BonsStandby', JSON.stringify(state))
             return state
-
-        case DELETE_BON_STANDBY:
+        })
+        .addCase(removeBonStandby, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('BonsStandby', JSON.stringify(state))
             return state
+        })
 
-        case REMOVE_BON_STANDBY:
-            state = removeDataById(state, action.payload)
-            localStorage.setItem('BonsStandby', JSON.stringify(state))
-            return state
-            
-        default: return state
-    }
-}
-
-export default reducerBonStandby
+})

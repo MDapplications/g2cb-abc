@@ -1,12 +1,14 @@
-import { ADD_ARTICLE_MEMBRE, REMOVE_ARTICLE_MEMBRE, REMOVE_ALL_ARTICLE_MEMBRE } from '../Constantes'
+import { createReducer } from '@reduxjs/toolkit'
 import { v4 as uuiv4} from 'uuid'
+import {    addArticleMembre, 
+            removeArticleMembre, 
+            removeAllArticleMembre
+        } 
+from '../actions/ArticlesMembre'
 
 
 //initial state
-const initialState = {
-    ArticlesMembre: []
-}
-
+let initialState = [] 
 
 //helper add Data
 const helperAdddata = action => {
@@ -22,42 +24,32 @@ const helperAdddata = action => {
     }
 }
 
-
 //helper remove data
-const removeDataById = (state, id) => {
-    const Articles = state.filter(Article => Article.id !== id)
-    return Articles
-}
-
-
-
+const removeDataById = (state, id) => state.filter(Article => Article.id !== id)
 
 
 //reducer
-const reducerArticleMembre = (state=initialState.ArticlesMembre, action) => {
+export default createReducer(initialState, (builder) => {
 
-    if(localStorage.getItem('ArticlesMembre')) {
-        state = JSON.parse(localStorage.getItem('ArticlesMembre'))
+    const localStorageData = localStorage.getItem('ArticlesMembre')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case ADD_ARTICLE_MEMBRE:
+    return builder
+        .addCase(addArticleMembre, (state, action) => {
             state = [...state, helperAdddata(action)]
             localStorage.setItem('ArticlesMembre', JSON.stringify(state))
             return state
-            
-        case REMOVE_ARTICLE_MEMBRE:
+        })
+        .addCase(removeArticleMembre, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('ArticlesMembre', JSON.stringify(state))
             return state
-         
-        case REMOVE_ALL_ARTICLE_MEMBRE:
-            state = []
-            localStorage.setItem('ArticlesMembre', JSON.stringify(state))
-            return state
-            
-        default: return state
-    }
-}
+        })
+        .addCase(removeAllArticleMembre, () => {
+            localStorage.setItem('ArticlesMembre', JSON.stringify([]))
+            return []
+        })
 
-export default reducerArticleMembre
+})

@@ -1,11 +1,10 @@
-import { ADD_BON_MEMBRE, REMOVE_BON_MEMBRE, REMOVE_ALL_BON_MEMBRE } from '../Constantes'
+import { createReducer } from '@reduxjs/toolkit'
+import { addBonMembre, removeAllBonMembre, removeBonMembre } from '../actions/BonsMembre'
 import { v4 as uuiv4} from 'uuid'
 
 
 //initial state
-const initialState = {
-    BonsMembre: []
-}
+let initialState = []
 
 
 //helper add Data
@@ -20,40 +19,29 @@ const helperAdddata = action => {
 
 
 //helper remove data
-const removeDataById = (state, id) => {
-    const Bons = state.filter(Bon => Bon.id !== id)
-    return Bons
-}
-
-
-
+const removeDataById = (state, id) => state.filter(Bon => Bon.id !== id)
 
 
 //reducer
-const reducerBonMembre = (state=initialState.BonsMembre, action) => {
-
-    if(localStorage.getItem('BonsMembre')) {
-        state = JSON.parse(localStorage.getItem('BonsMembre'))
+export default createReducer(initialState, (builder) => {
+    const localStorageData = localStorage.getItem('BonsMembre')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
-
-    switch (action.type) {
-        case ADD_BON_MEMBRE:
+    
+    return builder
+        .addCase(removeAllBonMembre, () => {
+            localStorage.setItem('BonsMembre', JSON.stringify([]))
+            return []
+        })
+        .addCase(addBonMembre, (state, action) => {
             state = [...state, helperAdddata(action)]
             localStorage.setItem('BonsMembre', JSON.stringify(state))
             return state
-            
-        case REMOVE_BON_MEMBRE:
+        })
+        .addCase(removeBonMembre, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('BonsMembre', JSON.stringify(state))
             return state
-         
-        case REMOVE_ALL_BON_MEMBRE:
-            state = []
-            localStorage.setItem('BonsMembre', JSON.stringify(state))
-            return state
-            
-        default: return state
-    }
-}
-
-export default reducerBonMembre
+        })
+})

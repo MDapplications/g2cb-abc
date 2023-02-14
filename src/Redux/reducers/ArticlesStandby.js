@@ -1,22 +1,19 @@
-import {LOAD_ARTICLE_STANDBY,
-        COMANDABLE_ARTICLE_STANDBY,
-        CHANGE_CLUB_ARTICLE_STANDBY,
-        DELETE_ARTICLE_STANDBY, 
-        REMOVE_ARTICLE_STANDBY} from '../Constantes'
+import { createReducer } from "@reduxjs/toolkit"
+import {    changeClubArticleStandby, 
+            commandableArticleStandby, 
+            loadArticleStandby, 
+            removeArticleStandby 
+        } 
+from "../actions/ArticlesStandby"
 
 const {REACT_APP_USER_ID_CLUB} = process.env
 
 //initial state
-const initialState = {
-    ArticlesStandby: []
-}
+let initialState = []
 
 
 //helper remove data
-const removeDataById = (state, id) => {
-    const Article = state.filter(Article => Article.id !== id)
-    return Article
-}
+const removeDataById = (state, id) => state.filter(Article => Article.id !== id)
 
 
 //helper de mise à jour de l'article (commandable)
@@ -28,6 +25,7 @@ const commandableDataById = (state, action) => {
     })
     return state
 }
+
 
 //helper de mise à jour de l'article (article acheter par le club)
 const changeClubDataById = (state, action) => {
@@ -41,40 +39,31 @@ const changeClubDataById = (state, action) => {
 }
 
 
-
 //reducer
-const reducerArticleStandby = (state=initialState.ArticlesStandby, action) => {
-
-    if(localStorage.getItem('ArticlesStandby')) {
-        state = JSON.parse(localStorage.getItem('ArticlesStandby'))
+export default createReducer(initialState, (builder) => {
+    
+    const localStorageData = localStorage.getItem('ArticlesStandby')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
     }
 
-    switch (action.type) {
-        case LOAD_ARTICLE_STANDBY:
+    return builder
+        .addCase(loadArticleStandby, (state) => {
             return state
-
-        case COMANDABLE_ARTICLE_STANDBY:
-            state = commandableDataById(state, action.payload)
-            localStorage.setItem('ArticlesStandby', JSON.stringify(state))
-            return state
-
-        case CHANGE_CLUB_ARTICLE_STANDBY:
+        })
+        .addCase(changeClubArticleStandby, (state, action) => {
             state = changeClubDataById(state, action.payload)
             localStorage.setItem('ArticlesStandby', JSON.stringify(state))
             return state
-
-        case DELETE_ARTICLE_STANDBY:
+        })
+        .addCase(commandableArticleStandby, (state, action) => {
+            state = commandableDataById(state, action.payload)
+            localStorage.setItem('ArticlesStandby', JSON.stringify(state))
+            return state
+        })
+        .addCase(removeArticleStandby, (state, action) => {
             state = removeDataById(state, action.payload)
             localStorage.setItem('ArticlesStandby', JSON.stringify(state))
             return state
-
-        case REMOVE_ARTICLE_STANDBY:
-            state = removeDataById(state, action.payload)
-            localStorage.setItem('ArticlesStandby', JSON.stringify(state))
-            return state
-            
-        default: return state
-    }
-}
-
-export default reducerArticleStandby
+        })
+})

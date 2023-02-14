@@ -1,4 +1,5 @@
-import { ADD_USER, UPDATE_USER, REMOVE_USER } from '../Constantes'
+import { createReducer } from "@reduxjs/toolkit"
+import { addUser, removeUser, updateUser } from "../actions/Users"
 
 
 //initial state
@@ -12,34 +13,18 @@ const initialState = {
     role: 0
 }
 
-
 //reducer
-const UserReducer = (state=initialState, action) => {
-    switch (action.type) {
-        case ADD_USER:
-            return {
-                ...state,
-                prenom: action.payload.prenom,
-                nom: action.payload.nom,
-                email: action.payload.email,
-                adresse: action.payload.adresse,
-                code_postal: action.payload.code_postal,
-                ville: action.payload.ville,
-                role: action.payload.role
-            }
-
-        case UPDATE_USER:
-            return {
-                ...state,
-                adresse: action.payload.adresse,
-                code_postal: action.payload.code_postal,
-                ville: action.payload.ville,
-            }
-        case REMOVE_USER: 
-            return state = initialState
-            
-        default: return state
-    }
-}
-
-export default UserReducer
+export default createReducer(initialState, (builder) => {
+    return builder
+        .addCase(removeUser, () => {
+            return initialState
+        })
+        .addCase(addUser, (state, action) => {
+            const {prenom, nom, email, adresse, code_postal, ville, role} = action.payload
+            return {...state, prenom, nom, email, adresse, code_postal, ville, role }
+        })
+        .addCase(updateUser, (state, action) => {
+            const {adresse, code_postal, ville} = action.payload
+            return {...state, adresse, code_postal, ville }
+        })
+})

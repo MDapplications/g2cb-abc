@@ -33,12 +33,12 @@ const Mentions = () => {
                             <Card.Subtitle>
                                 SIRET : 91128202800016
                             </Card.Subtitle>
-                            <Card.Text className='mt-3'>
+                            <div className='mt-3'>
                                 <h6 className='text-muted'>Adresse :</h6>{' 56 rue des carrières - 60170, Tracy le Mont'}
-                            </Card.Text>
-                            <Card.Text className='mt-3'>
+                            </div>
+                            <div className='mt-3'>
                                 <h6 className='text-muted'>email :</h6>{' contact@md-ev.ovh'}
-                            </Card.Text>
+                            </div>
                         </Card.Header>
                         <Card.Body>
                             <h6>Responsable de publication</h6>
@@ -48,14 +48,14 @@ const Mentions = () => {
                         </Card.Body>
                         <Card.Footer>
                         <Card.Title>Association de Badminton Cosacien</Card.Title>
-                            <Card.Text className='mt-3'>
+                            <div className='mt-3'>
                                 <h6 className='text-muted'>Adresse :</h6>
                                 60750 Choisy-au-Bac
-                            </Card.Text>
-                            <Card.Text className='mt-3'>
+                            </div>
+                            <div className='mt-3'>
                                 <h6 className='text-muted'>email :</h6>
                                 abc.president.hd@gmail.com
-                            </Card.Text>                      
+                            </div>                      
                         </Card.Footer>
                     </Card>
                 </div>

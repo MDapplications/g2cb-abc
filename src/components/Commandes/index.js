@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FirebaseContext } from '../Firebase'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addCommande, removeCommande } from '../../Redux/actions/Commandes'
 import ContainerCommandes from '../../containers/Commandes'
 import Modal2Confirmation from '../Modal2Confirmation'
@@ -10,13 +10,14 @@ const Commandes = () => {
     //Hooks
     const firebase = useContext(FirebaseContext)
     const dispatch = useDispatch()
+
+    //Redux
+    const {yearSelected} = useSelector(state => state.parametres)
  
     //State
-    const [currentYear] = useState(new Date().getFullYear())
     const [openModalDelete, setOpenModalDelete] = useState(false)
     const [data, setData] = useState('')
-
-
+    const [selectYear] = useState(yearSelected)
 
 
 
@@ -25,8 +26,8 @@ const Commandes = () => {
         
         //Getting des commandes
         if(!localStorage.getItem('Commandes')) {
-            console.log("Création de la liste des commandes")
-            firebase.getCommandes(currentYear)
+            console.log("Création de la liste des commandes de : ", selectYear)
+            firebase.getCommandes(selectYear)
             .then((docs) => {
                 docs.forEach((doc) => {   
                     dispatch(addCommande(doc.data()))
@@ -38,7 +39,7 @@ const Commandes = () => {
         }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentYear])
+    }, [selectYear])
 
 
     //Suppression de la commande

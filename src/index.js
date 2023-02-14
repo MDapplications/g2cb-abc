@@ -9,6 +9,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 const container = document.getElementById('app')
 const root = createRoot(container)
 
+console.log(`${process.env.REACT_APP_NAME} - ${process.env.REACT_APP_VERSION}`)
+
 root.render(
   <FirebaseContext.Provider value={new Firebase()}>
     <Redux store={store}>

@@ -92,6 +92,7 @@ const AddArticle = () => {
             date: currentDate
         }))
         setArticle(ArticleData)
+        setPrixMembreText(ArticleData.prix)
         setAchat(true)
         setDepot(false)
     }

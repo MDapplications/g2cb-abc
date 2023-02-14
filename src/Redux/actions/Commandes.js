@@ -1,53 +1,8 @@
-import {LOAD_COMMANDE,
-        ADD_COMMANDE,  
-        ADD_ARTICLE_COMMANDE,
-        ADD_BON_COMMANDE,
-        REMOVE_COMMANDE,
-        REMOVE_ALL_COMMANDE} from '../Constantes'
-
-
-//Action: Chargement des commandes
-export const loadCommande = () => {
-    return {
-        type: LOAD_COMMANDE
-    }
-}
-
-//Action: Ajout d'une commande
-export const addCommande = data => {
-    return {
-        type: ADD_COMMANDE,
-        payload: data
-    }
-}
-
-//Action: Ajout d'une commande
-export const addArticleCommande = article => {
-    return {
-        type: ADD_ARTICLE_COMMANDE,
-        payload: article
-    }
-}
-
-//Action: Ajout d'une commande
-export const addBonCommande = bon => {
-    return {
-        type: ADD_BON_COMMANDE,
-        payload: bon
-    }
-}
-
-//Action: Suppression d'une commande
-export const removeCommande = id => {
-    return {
-        type: REMOVE_COMMANDE,
-        payload: id
-    }
-}
-
-//Action: Suppression d'une commande
-export const removeAllCommande = () => {
-    return {
-        type: REMOVE_ALL_COMMANDE
-    }
-}
+import { createAction } from '@reduxjs/toolkit'
+//-------------------  Create Action Redux  --------------------
+export const loadCommande = createAction('commande/loading')
+export const addCommande = createAction('commande/add')
+export const addArticleCommande = createAction('commande/add/article')
+export const addBonCommande = createAction('commande/add/bon')
+export const removeCommande = createAction('commande/remove')
+export const removeAllCommande = createAction('commande/remove/all')

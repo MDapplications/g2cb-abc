@@ -1,9 +1,12 @@
-import {    LOAD_COMMANDE_MODIF,
-            ADD_BON_COMMANDE_MODIF,
-            ADD_ARTICLE_COMMANDE_MODIF,
-            REMOVE_ARTICLE_COMMANDE_MODIF,
-            UPDATE_ARTICLE_COMMANDE_MODIF,
-            REMOVE_COMMANDE_MODIF } from '../Constantes'
+import { createReducer } from '@reduxjs/toolkit'
+import {    loadCommandeModif, 
+            addBonCommandeModif, 
+            addArticleCommandeModif, 
+            removeArticleCommandeModif, 
+            updateArticleCommandeModif,
+            removeCommandeModif
+        }  
+from "../actions/ArticlesCommande"
 
 
 //initial state
@@ -58,7 +61,11 @@ const helperAddArticle = (state, article) => {
 const helperRemoveArticle = (state, article) => {
     state.nbArticles = state.nbArticles - article.quantite
     const resultMontant = state.montant - (article.prix * article.quantite)
-    resultMontant >= 0 ? state.montant = resultMontant : state.montant = 0
+    if (resultMontant >= 0) {
+        state.montant = resultMontant
+    } else {
+        state.montant = 0
+    }
     state.articles = state.articles.filter(data => data.id !== article.id)
     return state
 }
@@ -71,7 +78,11 @@ const helperUpdateArticle = (state, article) => {
     //changement du prix
     if (prevArticle.prix !== article.prix) {
         const resultMontant = state.montant + (article.prix * article.quantite) - (prevArticle.prix * prevArticle.quantite) 
-        resultMontant >= 0 ? state.montant = resultMontant : state.montant = 0
+        if (resultMontant >= 0) {
+            state.montant = resultMontant
+        } else {
+            state.montant = 0
+        }
     } 
 
     state.articles.push(article)
@@ -79,37 +90,25 @@ const helperUpdateArticle = (state, article) => {
 }
 
 
-
 //reducer
-const reducerArticlesCommande = (state=initialState, action) => {
-
-    switch (action.type) {
-        
-        case LOAD_COMMANDE_MODIF: 
-            state = helperLoadData(action.payload) 
-            return state
-
-        case ADD_BON_COMMANDE_MODIF:  
-            state = helperAddBon(state, action.payload)
-            return state
-            
-        case ADD_ARTICLE_COMMANDE_MODIF:   
-            state = helperAddArticle(state, action.payload)
-            return state  
-
-        case REMOVE_ARTICLE_COMMANDE_MODIF:
-            state = helperRemoveArticle(state, action.payload)
-            return state
-
-        case UPDATE_ARTICLE_COMMANDE_MODIF:
-            state = helperUpdateArticle(state, action.payload)
-            return state
-
-        case REMOVE_COMMANDE_MODIF:
+export default createReducer(initialState, (builder) => {
+    return builder
+        .addCase(removeCommandeModif, () => {
             return initialState
-            
-        default: return state
-    }
-}
-
-export default reducerArticlesCommande
+        })
+        .addCase(loadCommandeModif, (_, action) => {
+            return helperLoadData(action.payload)
+        })
+        .addCase(addBonCommandeModif, (state, action) => {
+            return helperAddBon(state, action.payload)
+        })
+        .addCase(addArticleCommandeModif, (state, action) => {
+            return helperAddArticle(state, action.payload) 
+        })
+        .addCase(removeArticleCommandeModif, (state, action) => {
+            return helperRemoveArticle(state, action.payload)
+        })
+        .addCase(updateArticleCommandeModif, (state, action) => {
+            return helperUpdateArticle(state, action.payload)
+        })
+})

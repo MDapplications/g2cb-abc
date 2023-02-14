@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Accordion, Badge, Button, Card } from 'react-bootstrap'
 import { FirebaseContext } from '../components/Firebase'
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,7 +6,7 @@ import { HiOutlineCheck } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 import { facturableArticleDepot, retournableArticleDepot } from '../Redux/actions/Depot'
-import { addArticleCommande, addBonCommande } from '../Redux/actions/Commandes'
+import { addArticleCommande, addBonCommande, addCommande } from '../Redux/actions/Commandes'
 import { removeAllPrepaFactDepot } from '../Redux/actions/PrepaFactDepot'
 
 
@@ -21,42 +21,100 @@ const ContainerDepot = () => {
     const articlesDepot = useSelector(state => state.depot)
     const listCommandes = useSelector(state => state.commandes)
     const listFactures = useSelector(state => state.prepaFactDepot)
-    
+
+    //States
+    const [selectCommandeId, setSelectCommandeId] = useState('')
+    const [commande, setCommande] = useState(undefined)
+    const [viewCommande, setViewCommande] = useState(false)
+    const [loadCommandeFinish, setLoadCommandeFinish] = useState(false)
 
     //Style
     const paddingBadge = {padding: '8px'} //style des badge 'ForFacture' et 'ForRetour
 
 
+    //Récupération de la commande si elle n'est pas présente dans la liste actuelle !
+    useEffect(() => {
+        if (viewCommande) {
+
+            if (!commande) {
+                console.log("Il n'y a pas de commande avec l'ID :", selectCommandeId)
+                
+                firebase.getCommande(selectCommandeId)
+                .then((doc) => {
+                    dispatch(addCommande(doc.data()))
+                    console.log('Commande n°', selectCommandeId, 'ajouté !')  
+                    setLoadCommandeFinish(true)           
+                })
+                .catch(err => {
+                    console.log('firebase.getArticleCommande', err)
+                })
+                
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [viewCommande, commande])
+
+
+    //Chargement de la commande récupérée !
+    useEffect(() => {
+        if (loadCommandeFinish && selectCommandeId !=='') {
+            const commandeFind = listCommandes.find(data => data.id === selectCommandeId)
+            setCommande(commandeFind)
+            setLoadCommandeFinish(false) 
+            console.log('Commande chargé !')
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loadCommandeFinish, selectCommandeId])
+    
+    
+    //Ouverture de la page de commande une fois les articles et bons chargés !
+    useEffect(() => {
+        if (commande && selectCommandeId !== '') {
+            console.log('Chargement du contenu de la commande !')
+            if (commande.articles.length === 0) {
+                firebase.getArticleCommande(selectCommandeId)
+                .then((docs) => {
+                    docs.forEach((doc) => {   
+                        dispatch(addArticleCommande(doc.data())) 
+                    })
+                    if (commande.bons.length === 0 && commande.nbBons > 0) {
+                        firebase.getBonCommande(selectCommandeId)
+                        .then((docs) => {
+                            docs.forEach((doc) => { 
+                                dispatch(addBonCommande(doc.data())) 
+                            })
+                            navigate('/commandePrint/' + selectCommandeId)
+                        })
+                        .catch(err => {
+                            console.log('firebase.getBonCommande', err)
+                        }) 
+                    }
+                    else {
+                        navigate('/commandePrint/' + selectCommandeId)
+                    }
+                })
+                .catch(err => {
+                    console.log('firebase.getArticleCommande', err)
+                }) 
+            }
+            else {
+                navigate('/commandePrint/' + selectCommandeId)
+            }  
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [viewCommande, selectCommandeId, commande])
+    
+
+
+
+
+
     // afficher / Imprimer la commande
     const handleShowCommande = commandeId => {
-        const commande = listCommandes.find(data => data.id === commandeId)
-
-        if (commande.articles.length === 0) {
-            firebase.getArticleCommande(commandeId)
-            .then((docs) => {
-                docs.forEach((doc) => {   
-                    dispatch(addArticleCommande(doc.data())) 
-                })
-                if (commande.bons.length === 0 && commande.nbBons > 0) {
-                    firebase.getBonCommande(commandeId)
-                    .then((docs) => {
-                        docs.forEach((doc) => { 
-                            dispatch(addBonCommande(doc.data())) 
-                        })
-                        navigate('/commandePrint/' + commandeId)
-                    })
-                    .catch(err => {
-                        console.log('firebase.getBonCommande', err)
-                    }) 
-                }
-            })
-            .catch(err => {
-                console.log('firebase.getArticleCommande', err)
-            }) 
-        }
-        else {
-            navigate('/commandePrint/' + commandeId)
-        }  
+        const commandeFind = listCommandes.find(data => data.id === commandeId)
+        setSelectCommandeId(commandeId)
+        setCommande(commandeFind)
+        setViewCommande(true)        
     }
 
 

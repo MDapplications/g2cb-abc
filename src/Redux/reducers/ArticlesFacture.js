@@ -1,9 +1,12 @@
-import {    LOAD_FACTURE_MODIF,
-            ADD_BON_FACTURE_MODIF,
-            ADD_ARTICLE_FACTURE_MODIF,
-            REMOVE_ARTICLE_FACTURE_MODIF,
-            UPDATE_ARTICLE_FACTURE_MODIF,
-            REMOVE_FACTURE_MODIF } from '../Constantes'
+import { createReducer } from '@reduxjs/toolkit'
+import {    addArticleFactureModif, 
+            addBonFactureModif, 
+            loadFactureModif, 
+            removeArticleFactureModif, 
+            removeFactureModif, 
+            updateArticleFactureModif 
+        } 
+from '../actions/ArticlesFacture'
 
 
 //initial state
@@ -57,7 +60,11 @@ const helperAddArticle = (state, article) => {
 const helperRemoveArticle = (state, article) => {
     state.nbArticles = Number(state.nbArticles - article.quantite)
     const resultMontant = Number(state.montant - (article.prix * article.quantite))
-    resultMontant >= 0 ? state.montant = resultMontant : state.montant = 0
+    if (resultMontant >= 0) {
+        state.montant = resultMontant
+    } else {
+        state.montant = 0
+    }
     state.articles = state.articles.filter(data => data.id !== article.id)
     return state
 }
@@ -70,45 +77,36 @@ const helperUpdateArticle = (state, article) => {
     //changement du prix
     if (prevArticle.prix !== article.prix) {
         const resultMontant = state.montant + (article.prix * article.quantite) - (prevArticle.prix * prevArticle.quantite) 
-        resultMontant >= 0 ? state.montant = resultMontant : state.montant = 0
+        if (resultMontant >= 0) {
+            state.montant = resultMontant
+        } else {
+            state.montant = 0
+        }
     } 
 
     state.articles.push(article)
     return state
 }
 
-
-
 //reducer
-const reducerArticlesFacture = (state=initialState, action) => {
-
-    switch (action.type) {
-        
-        case LOAD_FACTURE_MODIF: 
-            state = helperLoadData(action.payload) 
-            return state
-
-        case ADD_BON_FACTURE_MODIF:  
-            state = helperAddBon(state, action.payload)
-            return state
-            
-        case ADD_ARTICLE_FACTURE_MODIF:   
-            state = helperAddArticle(state, action.payload)
-            return state  
-
-        case REMOVE_ARTICLE_FACTURE_MODIF:
-            state = helperRemoveArticle(state, action.payload)
-            return state
-
-        case UPDATE_ARTICLE_FACTURE_MODIF:
-            state = helperUpdateArticle(state, action.payload)
-            return state
-
-        case REMOVE_FACTURE_MODIF:
+export default createReducer(initialState, (builder) => {
+    return builder
+        .addCase(removeFactureModif, () => {
             return initialState
-            
-        default: return state
-    }
-}
-
-export default reducerArticlesFacture
+        })
+        .addCase(loadFactureModif, (_, action) => {
+            return helperLoadData(action.payload)
+        })
+        .addCase(addBonFactureModif, (state, action) => {
+            return helperAddBon(state, action.payload)
+        })
+        .addCase(addArticleFactureModif, (state, action) => {
+            return helperAddArticle(state, action.payload) 
+        })
+        .addCase(removeArticleFactureModif, (state, action) => {
+            return helperRemoveArticle(state, action.payload)
+        })
+        .addCase(updateArticleFactureModif, (state, action) => {
+            return helperUpdateArticle(state, action.payload)
+        })
+})

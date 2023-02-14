@@ -1,48 +1,46 @@
-import {ADD_COMPTEUR_COMMANDE,
-        ADD_COMPTEUR_FACTURE,
-        ADD_COMPTEUR_RETOUR, 
-        INIT_COMPTEURS} from '../Constantes'
+import { createReducer } from "@reduxjs/toolkit"
+import {    addCompteurCommande, 
+            addCompteurFacture, 
+            addCompteurRetour, 
+            initCompteurs 
+        } 
+from "../actions/Compteurs"
 
 
 //initial state
-const initialState = {
-    compteurs: {
-        commande: 1,
-        facture: 1,
-        retour: 1
-    }
+let initialState = {
+    commande: 1,
+    facture: 1,
+    retour: 1
 }
 
+
 //reducer
-const reducerCompteurs = (state=initialState.compteurs, action) => {
+export default createReducer(initialState, (builder) => {
 
-    if(localStorage.getItem('Compteurs')) {
-        state = JSON.parse(localStorage.getItem('Compteurs'))
-    } 
+    const localStorageData = localStorage.getItem('Compteurs')
+    if (localStorageData) {
+        initialState = JSON.parse(localStorageData)
+    }
 
-    switch (action.type) {
-        case INIT_COMPTEURS:
-            state = initialState.compteurs
-            localStorage.setItem('Compteurs', JSON.stringify(state))
-            return state
-
-        case ADD_COMPTEUR_COMMANDE:
+    return builder
+        .addCase(initCompteurs, () => {
+            localStorage.setItem('Compteurs', JSON.stringify(initialState))
+            return initialState
+        })
+        .addCase(addCompteurCommande, (state) => {
             state.commande = state.commande + 1
             localStorage.setItem('Compteurs', JSON.stringify(state))
             return state
-
-        case ADD_COMPTEUR_FACTURE:
+        })
+        .addCase(addCompteurFacture, (state) => {
             state.facture = state.facture + 1
             localStorage.setItem('Compteurs', JSON.stringify(state))
             return state
-
-        case ADD_COMPTEUR_RETOUR:
+        })
+        .addCase(addCompteurRetour, (state) => {
             state.retour = state.retour + 1
             localStorage.setItem('Compteurs', JSON.stringify(state))
             return state
-            
-        default: return state
-    }
-}
-
-export default reducerCompteurs
+        })
+})

@@ -1,47 +1,42 @@
-import { createStore, combineReducers, applyMiddleware} from 'redux'
-import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
-import reducerArticleMembre from './reducers/ArticlesMembre'
-import UserReducer from './reducers/Users'
-import reducerBonMembre from './reducers/BonsMembre'
-import reducerArticleStandby from './reducers/ArticlesStandby'
-import reducerBonStandby from './reducers/BonsStandby'
-import reducerCompteurs from './reducers/Compteurs'
-import reducerArticlesCommande from './reducers/ArticlesCommande'
-import reducerCommandes from './reducers/Commandes'
-import reducerDepot from './reducers/Depot'
-import reducerFactures from './reducers/Factures'
-import reducerParams from './reducers/Parametres'
-import reducerPrepaFactures from './reducers/PrepaFactures'
-import reducerPrepaFactDepot from './reducers/PrepaFactDepot'
-import reducerBonsDepot from './reducers/BonsDepot'
-import reducerRetours from './reducers/Retours'
-import reducerUtilisateurs from './reducers/Utilisateurs'
-import reducerArticlesFacture from './reducers/ArticlesFacture'
+import { configureStore } from '@reduxjs/toolkit'
+//--------------------------  Reducers list  ----------------------------------//
+import articlesMembre from './reducers/ArticlesMembre'
+import user from './reducers/Users'
+import bonsMembre from './reducers/BonsMembre'
+import articlesStandby from './reducers/ArticlesStandby'
+import bonsStandby from './reducers/BonsStandby'
+import compteurs from './reducers/Compteurs'
+import commandeModif from './reducers/ArticlesCommande'
+import commandes from './reducers/Commandes'
+import depot from './reducers/Depot'
+import factures from './reducers/Factures'
+import parametres from './reducers/Parametres'
+import prepaFactures from './reducers/PrepaFactures'
+import prepaFactDepot from './reducers/PrepaFactDepot'
+import bonsDepot from './reducers/BonsDepot'
+import retours from './reducers/Retours'
+import listUsers from './reducers/Utilisateurs'
+import factureModif from './reducers/ArticlesFacture'
 
-
-const rootReducer = combineReducers({
-    user: UserReducer,
-    articlesMembre: reducerArticleMembre,
-    bonsMembre: reducerBonMembre,
-    articlesStandby: reducerArticleStandby,
-    bonsStandby: reducerBonStandby,
-    prepaFactures: reducerPrepaFactures,
-    compteurs: reducerCompteurs,
-    commandeModif: reducerArticlesCommande,
-    commandes: reducerCommandes,
-    factureModif: reducerArticlesFacture,
-    factures: reducerFactures,
-    depot: reducerDepot,
-    bonsDepot: reducerBonsDepot,
-    parametres: reducerParams,
-    prepaFactDepot: reducerPrepaFactDepot,
-    retours: reducerRetours,
-    listUsers: reducerUtilisateurs
+//----- store -----//
+export default configureStore({
+    reducer: {
+        user,
+        articlesMembre,
+        bonsMembre,
+        articlesStandby,
+        bonsStandby,
+        prepaFactures,
+        compteurs,
+        commandeModif,
+        commandes,
+        factureModif,
+        factures,
+        depot,
+        bonsDepot,
+        parametres,
+        prepaFactDepot,
+        retours,
+        listUsers
+    } 
 })
-
-
-//creation du store et ajout du reducer
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)))
-
-export default store

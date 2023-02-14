@@ -1,19 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react'
+
+import { addArticlePrepaFacture, addBonPrepaFacture, addPrepaFacture, removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
+import { changeClubArticleStandby, loadArticleStandby, removeArticleStandby } from '../../Redux/actions/ArticlesStandby'
+import { initCompteurs, addCompteurCommande, addCompteurFacture } from '../../Redux/actions/Compteurs'
+import { loadBonStandby, removeBonStandby } from '../../Redux/actions/BonsStandby'
+import { removeAllCommande } from '../../Redux/actions/Commandes'
+import { removeAllFacture } from '../../Redux/actions/Factures'
+import { removeAllDepot } from '../../Redux/actions/Depot'
+
+import ContainerArticles from '../../containers/ContainerArticles'
 import { useDispatch, useSelector } from 'react-redux'
+import Modal2Confirmation from '../Modal2Confirmation'
 import { FirebaseContext } from '../Firebase'
 import { Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
-import Modal2Confirmation from '../Modal2Confirmation'
-import ContainerArticles from '../../containers/ArticlesStandby'
-import { changeClubArticleStandby, deleteArticleStandby, loadArticleStandby, removeArticleStandby } from '../../Redux/actions/ArticlesStandby'
-import { deleteBonStandby, loadBonStandby, removeBonStandby } from '../../Redux/actions/BonsStandby'
-import { initCompteurs, addCompteurCommande, addCompteurFacture } from '../../Redux/actions/Compteurs'
-import { addArticlePrepaFacture, addBonPrepaFacture, addPrepaFacture, removeAllPrepaFacture } from '../../Redux/actions/PrepaFactures'
-import 'react-toastify/dist/ReactToastify.css'
-import { removeAllDepot } from '../../Redux/actions/Depot'
-import { removeAllFacture } from '../../Redux/actions/Factures'
-import { removeAllCommande } from '../../Redux/actions/Commandes'
 
+import 'react-toastify/dist/ReactToastify.css'
 toast.configure()
 
 
@@ -441,7 +443,7 @@ const StandbyArticle = () => {
             case 'article':
                 firebase.deleteArticle(data.id)
                 .then(() => {
-                    dispatch(deleteArticleStandby(data.id))
+                    dispatch(removeArticleStandby(data.id))
                     dispatch(removeAllPrepaFacture())
                 })
                 .catch(err => {
@@ -451,7 +453,7 @@ const StandbyArticle = () => {
             case 'bon':
                 firebase.deleteBon(data.id)
                 .then(() => {
-                    dispatch(deleteBonStandby(data.id))
+                    dispatch(removeBonStandby(data.id))
                     dispatch(removeAllPrepaFacture())
                 })
                 .catch(err => {

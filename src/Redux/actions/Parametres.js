@@ -1,15 +1,5 @@
-import { ADD_PARAMETRE, REMOVE_PARAMETRE } from '../Constantes'
-
-
-export const addParams = data => {
-    return {
-        type: ADD_PARAMETRE,
-        payload: data
-    }
-}
-
-export const removeParams = () => {
-    return {
-        type: REMOVE_PARAMETRE
-    }
-}
+import { createAction } from '@reduxjs/toolkit'
+//-------------------  Create Action Redux  --------------------
+export const changeSelectYear = createAction('parameters/change-select-year')
+export const addParams = createAction('parameters/add')
+export const removeParams = createAction('parameters/remove')
