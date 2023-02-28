@@ -42,15 +42,11 @@ const removeDataById = (state, id) => state.filter(Article => Article.id !== id)
 
 //reducer
 export default createReducer(initialState, (builder) => {
-    
-    const localStorageData = localStorage.getItem('Commandes')
-    if (localStorageData) {
-        initialState = JSON.parse(localStorageData)
-    }
 
     return builder
-        .addCase(loadDepot, (state) => {
-            return state
+        .addCase(loadDepot, () => {
+            const localStorageData = localStorage.getItem('Commandes')
+            return JSON.parse(localStorageData)
         })
         .addCase(removeAllDepot, () => {
             localStorage.setItem('Depot', JSON.stringify([]))

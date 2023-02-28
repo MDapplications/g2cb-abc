@@ -54,7 +54,7 @@ const ContainerArticles = ({showModalDelete, showModalClub}) => {
                     firebase.disableForCommandeArticle(id)
                     .then(() => {
                         dispatch(removeAllPrepaFacture())
-                        dispatch(commandableArticleStandby(id, false))
+                        dispatch(commandableArticleStandby({id, value: false}))
                     })
                     .catch(err => {
                         console.log(err);
@@ -64,7 +64,7 @@ const ContainerArticles = ({showModalDelete, showModalClub}) => {
                     firebase.enableForCommandeArticle(id)
                     .then(() => {
                         dispatch(removeAllPrepaFacture())
-                        dispatch(commandableArticleStandby(id, true))
+                        dispatch(commandableArticleStandby({id, value: true}))
                     })
                     .catch(err => {
                         console.log(err);
@@ -77,7 +77,7 @@ const ContainerArticles = ({showModalDelete, showModalClub}) => {
                     firebase.disableForCommandeBon(id)
                     .then(() => {
                         dispatch(removeAllPrepaFacture())
-                        dispatch(commandableBonStandby(id, false))
+                        dispatch(commandableBonStandby({id, value: false}))
                     })
                     .catch(err => {
                         console.log(err);
@@ -87,7 +87,7 @@ const ContainerArticles = ({showModalDelete, showModalClub}) => {
                     firebase.enableForCommandeBon(id)
                     .then(() => {
                         dispatch(removeAllPrepaFacture())
-                        dispatch(commandableBonStandby(id, true))
+                        dispatch(commandableBonStandby({id, value: true}))
                     })
                     .catch(err => {
                         console.log(err);

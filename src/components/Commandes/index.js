@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { FirebaseContext } from '../Firebase'
 import { useDispatch, useSelector } from 'react-redux'
 import { addCommande, removeCommande } from '../../Redux/actions/Commandes'
-import ContainerCommandes from '../../containers/Commandes'
+import ContainerCommandes from '../../containers/ContainerCommandes'
 import Modal2Confirmation from '../Modal2Confirmation'
 
 const Commandes = () => {

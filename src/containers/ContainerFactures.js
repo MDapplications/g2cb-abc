@@ -51,7 +51,7 @@ const ContainerFactures = () => {
             //Retiré de la commande
             firebase.disableReglerFacture(facture.id)
             .then(() => {
-                dispatch(reglerFacture(facture.id, false))
+                dispatch(reglerFacture({id: facture.id, value: false}))
             })
             .catch(err => {
                 console.log('firebase.disableReglerFacture', err);
@@ -60,7 +60,7 @@ const ContainerFactures = () => {
             //Remettre dans la commande
             firebase.enableReglerFacture(facture.id)
             .then(() => {
-                dispatch(reglerFacture(facture.id, true))
+                dispatch(reglerFacture({id: facture.id, value: true}))
             })
             .catch(err => {
                 console.log('firebase.enableReglerFacture', err);

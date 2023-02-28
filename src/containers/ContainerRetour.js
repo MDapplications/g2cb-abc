@@ -23,7 +23,7 @@ const ContainerRetour = () => {
             //Retiré de la commande
             firebase.disableRetournerRetour(retour.id)
             .then(() => {
-                dispatch(retournerRetour(retour.id, !retour.retourner))
+                dispatch(retournerRetour({id: retour.id, value: !retour.retourner}))
             })
             .catch(err => {
                 console.log('firebase.disableRetournerRetour', err);
@@ -32,7 +32,7 @@ const ContainerRetour = () => {
             //Remettre dans la commande
             firebase.enableRetournerRetour(retour.id)
             .then(() => {
-                dispatch(retournerRetour(retour.id, !retour.retourner))
+                dispatch(retournerRetour({id: retour.id, value: !retour.retourner}))
             })
             .catch(err => {
                 console.log('firebase.enableRetournerRetour', err);

@@ -33,15 +33,11 @@ const removeDataById = (state, id) => state.filter(bon => bon.id !== id)
 
 //reducer
 export default createReducer(initialState, (builder) => {
-        
-    const localStorageData = localStorage.getItem('BonsDepot')
-    if (localStorageData) {
-        initialState = JSON.parse(localStorageData)
-    }
 
     return builder
-        .addCase(loadBonDepot, (state) => {
-            return state
+        .addCase(loadBonDepot, () => {
+            const localStorageData = localStorage.getItem('BonsDepot')
+            return JSON.parse(localStorageData)
         })
         .addCase(removeAllBonDepot, () => {
             localStorage.setItem('BonsDepot', JSON.stringify([]))

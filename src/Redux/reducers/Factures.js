@@ -72,14 +72,10 @@ const helperAddBon = (state, action) => {
 //reducer
 export default createReducer(initialState, (builder) => {
 
-    const localStorageData = localStorage.getItem('BonsDepot')
-    if (localStorageData) {
-        initialState = JSON.parse(localStorageData)
-    }
-
     return builder
-        .addCase(loadFacture, (state) => {
-            return state
+        .addCase(loadFacture, () => {
+            const localStorageData = localStorage.getItem('BonsDepot')
+            return JSON.parse(localStorageData)
         })
         .addCase(removeAllFacture, () => {
             localStorage.setItem('Factures', JSON.stringify([]))

@@ -84,7 +84,7 @@ const ModalBonsDepot = ({hideModal}) => {
             .then(() => {
                 console.log('removeBonPrepaFactDepot', selectBon)
                 dispatch(removeBonPrepaFactDepot(selectBon))
-                dispatch(facturableBonDepot(selectBon.id, !selectBon.forFacture))
+                dispatch(facturableBonDepot({id: selectBon.id, value: !selectBon.forFacture}))
                 setSelectBon({
                     ...selectBon,
                     forFacture: !selectBon.forFacture
@@ -98,7 +98,7 @@ const ModalBonsDepot = ({hideModal}) => {
             .then(() => {
                 console.log('addBonPrepaFactDepot', selectBon)
                 dispatch(addBonPrepaFactDepot(selectBon))
-                dispatch(facturableBonDepot(selectBon.id, !selectBon.forFacture))
+                dispatch(facturableBonDepot({id: selectBon.id, value: !selectBon.forFacture}))
                 setSelectBon({
                     ...selectBon,
                     forFacture: !selectBon.forFacture

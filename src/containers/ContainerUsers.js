@@ -43,9 +43,9 @@ const ContainerUsers = () => {
     const handleChecked = user => {
         switch (user.role) {
             case 1:
-                firebase.updateRoleUser(user.id, 2)
+                firebase.updateRoleUser({id: user.id, role: 2})
                 .then(() => {
-                    dispatch(updateRoleUsers(user.id, 2))
+                    dispatch(updateRoleUsers({id: user.id, role: 2}))
                 })
                 .catch(err => {
                     console.log('firebase.updateRoleUser', err);
@@ -53,9 +53,9 @@ const ContainerUsers = () => {
                 break
         
             case 2:
-                firebase.updateRoleUser(user.id, 1)
+                firebase.updateRoleUser({id: user.id, role: 1})
                 .then(() => {
-                    dispatch(updateRoleUsers(user.id, 1))
+                    dispatch(updateRoleUsers({id: user.id, role: 1}))
                 })
                 .catch(err => {
                     console.log('firebase.updateRoleUser', err);

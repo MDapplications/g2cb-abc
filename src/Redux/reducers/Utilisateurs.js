@@ -7,7 +7,7 @@ import { addUsers, deleteUsers, loadUsers, removeAllUsers, updateRoleUsers } fro
 let initialState = []
 
 
-const helperAdddata = (action) => {
+const helperAddData = (action) => {
     return {
         email: action.payload.email,
         prenom: action.payload.prenom,
@@ -39,21 +39,18 @@ const deleteDataById = (state, id) => {
 
 //reducer
 export default createReducer(initialState, (builder) => {
-    const localStorageData = localStorage.getItem('listUsers')
-    if (localStorageData) {
-        initialState = JSON.parse(localStorageData)
-    }
 
     return builder 
-        .addCase(loadUsers, (state) => {
-            return state
+        .addCase(loadUsers, () => {
+            const localStorageData = localStorage.getItem('listUsers')
+            return JSON.parse(localStorageData)
         })
         .addCase(removeAllUsers, () => {
             localStorage.setItem('listUsers', JSON.stringify([]))
             return []
         })
         .addCase(addUsers, (state, action) => {
-            state = [...state, helperAdddata(action)]
+            state = [...state, helperAddData(action)]
             localStorage.setItem('listUsers', JSON.stringify(state))
             return state
         })

@@ -53,14 +53,10 @@ const helperAddBon = (state, action) => {
 //reducer
 export default createReducer(initialState, (builder) => {
 
-    const localStorageData = localStorage.getItem('Commandes')
-    if (localStorageData) {
-        initialState = JSON.parse(localStorageData)
-    }
-
     return builder
-        .addCase(loadCommande, (state) => {
-            return state
+        .addCase(loadCommande, () => {
+            const localStorageData = localStorage.getItem('Commandes')
+            return JSON.parse(localStorageData)
         })
         .addCase(removeAllCommande, () => {
             localStorage.setItem('Commandes', JSON.stringify([]))

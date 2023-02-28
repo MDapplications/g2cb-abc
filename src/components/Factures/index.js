@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { FirebaseContext } from '../Firebase'
 import { useDispatch, useSelector } from 'react-redux'
 import { addFacture } from '../../Redux/actions/Factures'
-import ContainerFactures from '../../containers/Factures'
+import ContainerFactures from '../../containers/ContainerFactures'
 
 
 const Factures = () => {

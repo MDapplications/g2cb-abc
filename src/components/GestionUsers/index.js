@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import ContainerUsers from '../../containers/Utilisateurs'
+import ContainerUsers from '../../containers/ContainerUsers'
 import { addUsers } from '../../Redux/actions/Utilisateurs'
 import { FirebaseContext } from '../Firebase'
 

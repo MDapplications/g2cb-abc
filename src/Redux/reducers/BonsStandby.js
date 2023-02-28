@@ -24,15 +24,10 @@ const commandableDataById = (state, action) => {
 
 //reducer
 export default createReducer(initialState, (builder) => {
-
-    const localStorageData = localStorage.getItem('BonsStandby')
-    if (localStorageData) {
-        initialState = JSON.parse(localStorageData)
-    }
-
     return builder
-        .addCase(loadBonStandby, (state) => {
-            return state
+        .addCase(loadBonStandby, () => {
+            const localStorageData = localStorage.getItem('BonsStandby')
+            return JSON.parse(localStorageData)
         })
         .addCase(commandableBonStandby, (state, action) => {
             state = commandableDataById(state, action.payload)

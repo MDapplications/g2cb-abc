@@ -41,15 +41,16 @@ const changeClubDataById = (state, action) => {
 
 //reducer
 export default createReducer(initialState, (builder) => {
-    
+    /* 
     const localStorageData = localStorage.getItem('ArticlesStandby')
     if (localStorageData) {
         initialState = JSON.parse(localStorageData)
     }
-
+ */
     return builder
-        .addCase(loadArticleStandby, (state) => {
-            return state
+        .addCase(loadArticleStandby, () => {
+            const localStorageData = localStorage.getItem('ArticlesStandby')
+            return JSON.parse(localStorageData)
         })
         .addCase(changeClubArticleStandby, (state, action) => {
             state = changeClubDataById(state, action.payload)

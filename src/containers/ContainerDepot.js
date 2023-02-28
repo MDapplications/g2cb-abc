@@ -123,49 +123,29 @@ const ContainerDepot = () => {
     const handleToggle = (type, id, value) => {
         switch (type) {
             case 'forFacture':
-                if (value) {
-                    //Retiré de la facturation
-                    firebase.disableForFactureArticle(id)
-                    .then(() => {
-                        dispatch(facturableArticleDepot(id, !value))
-                        dispatch(removeAllPrepaFactDepot())
-                    })
-                    .catch(err => {
-                        console.log('firebase.disableForFactureArticle', err);
-                    })
-                } else {
-                    //Mettre en facturation
-                    firebase.enableForFactureArticle(id)
-                    .then(() => {
-                        dispatch(facturableArticleDepot(id, !value))
-                        dispatch(removeAllPrepaFactDepot())
-                    })
-                    .catch(err => {
-                        console.log('firebase.enabledForFactureArticle', err);
-                    })
-                }
+
+                //Retiré de la facturation
+                firebase.disableForFactureArticle(id)
+                .then(() => {
+                    dispatch(facturableArticleDepot({id, value: !value}))
+                    dispatch(removeAllPrepaFactDepot())
+                })
+                .catch(err => {
+                    console.log('firebase.disableForFactureArticle', err);
+                })
                     
                 break;
             case 'forRetour':
-                if (value) {
-                    //Retiré du retour
-                    firebase.disableForRetourArticle(id)
-                    .then(() => {
-                        dispatch(retournableArticleDepot(id, !value))
-                    })
-                    .catch(err => {
-                        console.log('firebase.disableForRetourArticle', err);
-                    })
-                } else {
-                    //Mettre en retour
-                    firebase.enableForRetourArticle(id)
-                    .then(() => {
-                        dispatch(retournableArticleDepot(id, !value))
-                    })
-                    .catch(err => {
-                        console.log('firebase.enabledForRetourArticle', err);
-                    })
-                }
+
+                //Retiré du retour
+                firebase.disableForRetourArticle(id)
+                .then(() => {
+                    dispatch(retournableArticleDepot({id, value: !value}))
+                })
+                .catch(err => {
+                    console.log('firebase.disableForRetourArticle', err);
+                })
+                
                 break;
             default:
                 break;
@@ -211,11 +191,7 @@ const ContainerDepot = () => {
             return true 
         } else {
             if (listFactures[article.user_id]) {
-                if (listFactures[article.user_id].bons.length === 0) {
-                    return false
-                } else {
-                    return true
-                }
+                return listFactures[article.user_id].bons.length !== 0
             } else {
                 return false
             }
