@@ -92,25 +92,15 @@ code {
 /* Dimensions other than px and em should be divided by 1.33 for the proper PDF output */
 
 .size-a4-paysage {
-  width: 1203px;
-  height: 850px;
+  width: 1217px;
+  height: 860px;
 }
-
 
 .box {
-  padding: 1em;
-  background-color: rgba(20, 53, 80, 0.038);
+  padding: 0.7em;
+  background-color: rgba(12, 34, 53, 0.233);
   border: 1px solid rgba(20, 53, 80, 0.05);
-}
-
-
-@media print
-{               
-  @page port { size: portrait; margin: 0mm; }
-  .portrait { page: port; }
-
-  @page land { size: landscape; margin: 0mm; }
-  .paysage { page: land; }                
+  margin-bottom: 20px;
 }
 
 

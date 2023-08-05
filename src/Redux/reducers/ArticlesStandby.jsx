@@ -6,7 +6,7 @@ import {    changeClubArticleStandby,
         } 
 from "../actions/ArticlesStandby"
 
-const {REACT_APP_USER_ID_CLUB} = process.env
+const {VITE_APP_USER_ID_CLUB} = import.meta.env
 
 //initial state
 let initialState = []
@@ -31,7 +31,7 @@ const commandableDataById = (state, action) => {
 const changeClubDataById = (state, action) => {
     state.forEach(article => {
         if (article.id === action.id) {
-            article.user_id = REACT_APP_USER_ID_CLUB
+            article.user_id = VITE_APP_USER_ID_CLUB
             article.user_name = action.value
         }
     })

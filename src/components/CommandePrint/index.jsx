@@ -131,7 +131,7 @@ const CommandePrint = () => {
             </div>
 
             <div className='page-container hidden-on-narrow'>
-                <div className='pdf-page size-a4-paysage paysage'>
+                <div  id='commande-page-print' className='pdf-page size-a4-paysage'>
                 <div className='inner-page'>
                     <div className='pdf-header d-flex justify-content-between'>
                         <span>

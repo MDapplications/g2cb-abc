@@ -8,7 +8,7 @@ const Footer = () => {
     return (
         <footer className='footer text-white bg-primary bg-gradient mt-5 d-flex flex-row component-footer d-print-none'>
             <div className='p-2 container text-center'>
-                <span>&copy;{` MDev 2023 - Version ${process.env.REACT_APP_VERSION} - Plateforme ABC - Association de Badminton Cosacien`}</span> 
+                <span>&copy;{` MDev 2023 - Version ${import.meta.env.VITE_APP_VERSION} - Plateforme ABC - Association de Badminton Cosacien`}</span>
             </div>
             <div className='p-2 container text-end'>
                 <span style={spanMinSize} >

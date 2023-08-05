@@ -20,7 +20,7 @@ toast.configure()
 const Home = () => {
 
     //Environnement
-    const {REACT_APP_EMAILJS_SERVICE_MAIL, REACT_APP_EMAILJS_PUBLIC_KEY} = process.env
+    const {VITE_APP_EMAILJS_SERVICE_MAIL, VITE_APP_EMAILJS_PUBLIC_KEY} = import.meta.env
 
     //Redux
     const user = useSelector(state => state.user)
@@ -222,7 +222,7 @@ const Home = () => {
             if (parametres.sendmail !== '') {
                 const templateParams = {sendmail: parametres.sendmail, user_name: user.prenom + ' ' + user.nom}
 
-                emailjs.send(REACT_APP_EMAILJS_SERVICE_MAIL,'template_artAttente', templateParams, REACT_APP_EMAILJS_PUBLIC_KEY)
+                emailjs.send(VITE_APP_EMAILJS_SERVICE_MAIL,'template_artAttente', templateParams, VITE_APP_EMAILJS_PUBLIC_KEY)
                 .then(
                     response => {console.log('MAIL SEND : SUCCESS!', response.status, response.text)}, 
                     err => {console.log('MAIL SEND : FAILED...', err)}

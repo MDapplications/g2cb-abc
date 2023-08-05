@@ -133,7 +133,7 @@ const FacturePrint = () => {
             </div>
 
             <div className='page-container hidden-on-narrow'>
-                <div className='pdf-page size-a4-portrait portrait'>
+                <div className='pdf-page size-a4-portrait'>
                 <div className='inner-page'>
                     <div className='pdf-header d-flex justify-content-between'>
                         <span>

@@ -12,6 +12,10 @@ code {
     monospace;
 }
 
+table {
+  page-break-inside: avoid;
+}
+
 .pdf-page {
   position: relative;
   margin: 0 auto;
@@ -88,14 +92,9 @@ code {
 }
 
 /* Dimensions the proper PDF output */
-.size-a4-paysage {
-  width: 1203px;
-  height: 850px;
-}
-
 .size-a4-portrait {
-  width: 850px;
-  height: 1203px;
+  width: 860px;
+  height: 1217px;
 }
 
 
@@ -103,13 +102,4 @@ code {
   padding: 1em;
   background-color: rgba(20, 53, 80, 0.038);
   border: 1px solid rgba(20, 53, 80, 0.05);
-}
-
-@media print
-{               
-  @page port { size: portrait; margin: 0mm; }
-  .portrait { page: port; }
-
-  @page land { size: landscape; margin: 0mm; }
-  .paysage { page: land; }                
 }
