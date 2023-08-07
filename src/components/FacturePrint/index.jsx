@@ -156,7 +156,7 @@ const FacturePrint = () => {
                                 <img src={Logo} alt='Logo' width='60' height='60'/>
                             </div>
                             <div className='ms-2'> 
-                                <p className='mb-0'>Le chèque est à mettre à l'odre de :</p>
+                                <p className='mb-0'>Le chèque est à mettre à l'ordre de :</p>
                                 <h6>{parametres.club}</h6>
                             </div>
                         </div>
