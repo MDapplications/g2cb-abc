@@ -2,7 +2,7 @@
 .component-center {
   display: flex;
   flex-direction: column;
-  flex-Wrap: nowrap;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   align-items: center;
   align-content: center;
